@@ -5,47 +5,73 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Attendance - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
+
 <body>
 
-    <header>
+<header>
 
-        <h1>School Management</h1>
+    <h1>School Management</h1>
 
-        <nav>
+    <nav>
 
-            <a href="home.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="students.html">Students</a>
-            <a href="teachers.html">Teachers</a>
-            <a href="subjects.html">Subjects</a>
-            <a href="marks.html">Marks</a>
-            <a href="attendance.html">Attendance</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        </nav>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
 
-    </header>
+        <a href="students.html">
+            Students
+        </a>
+
+        <a href="teachers.html">
+            Teachers
+        </a>
+
+        <a href="subjects.html">
+            Subjects
+        </a>
+
+        <a href="marks.html">
+            Marks
+        </a>
+
+        <a href="attendance.html">
+            Attendance
+        </a>
+
+    </nav>
+
+</header>
 
 
-    <main class="container">
+<main class="container">
 
-        <h1>Attendance Management</h1>
+    <h1>
+        Attendance Management
+    </h1>
 
 
-        <h2>Record Attendance</h2>
+    <!-- =========================
+         ATTENDANCE FORM
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Record Attendance
+        </h2>
 
 
         <form id="attendanceForm">
@@ -132,11 +158,21 @@
 
         </form>
 
+    </div>
 
-        <hr>
+
+    <hr>
 
 
-        <h2>Attendance List</h2>
+    <!-- =========================
+         ATTENDANCE LIST
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Attendance List
+        </h2>
 
 
         <div class="table-container">
@@ -147,11 +183,25 @@
 
                     <tr>
 
-                        <th>ID</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Student
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th class="actions-column">
+                            Actions
+                        </th>
 
                     </tr>
 
@@ -174,12 +224,21 @@
 
         </div>
 
-    </main>
+    </div>
+
+</main>
 
 
-    <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/attendance.js"></script>
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/attendance.js"></script>
+
 
 </body>
 

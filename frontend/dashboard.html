@@ -5,19 +5,15 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Dashboard - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="./css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
+
 
 <body>
 
@@ -27,31 +23,31 @@
 
     <nav>
 
-        <a href="./home.html">
+        <a href="index.html">
             Home
         </a>
 
-        <a href="./dashboard.html">
+        <a href="dashboard.html">
             Dashboard
         </a>
 
-        <a href="./students.html">
+        <a href="students.html">
             Students
         </a>
 
-        <a href="./teachers.html">
+        <a href="teachers.html">
             Teachers
         </a>
 
-        <a href="./subjects.html">
+        <a href="subjects.html">
             Subjects
         </a>
 
-        <a href="./marks.html">
+        <a href="marks.html">
             Marks
         </a>
 
-        <a href="./attendance.html">
+        <a href="attendance.html">
             Attendance
         </a>
 
@@ -65,53 +61,93 @@
     <h1>School Management Dashboard</h1>
 
 
-    <!-- ================================
-         SUMMARY CARDS
-    ================================= -->
+    <!-- SUMMARY CARDS -->
 
     <div class="dashboard-cards">
 
         <div class="card">
-            <h2 id="studentCount">0</h2>
-            <p>Total Students</p>
+
+            <h2 id="studentCount">
+                0
+            </h2>
+
+            <p>
+                Total Students
+            </p>
+
         </div>
 
-        <div class="card">
-            <h2 id="teacherCount">0</h2>
-            <p>Total Teachers</p>
-        </div>
 
         <div class="card">
-            <h2 id="subjectCount">0</h2>
-            <p>Total Subjects</p>
+
+            <h2 id="teacherCount">
+                0
+            </h2>
+
+            <p>
+                Total Teachers
+            </p>
+
         </div>
 
-        <div class="card">
-            <h2 id="marksCount">0</h2>
-            <p>Marks Recorded</p>
-        </div>
 
         <div class="card">
-            <h2 id="attendanceCount">0</h2>
-            <p>Attendance Records</p>
+
+            <h2 id="subjectCount">
+                0
+            </h2>
+
+            <p>
+                Total Subjects
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2 id="marksCount">
+                0
+            </h2>
+
+            <p>
+                Marks Recorded
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2 id="attendanceCount">
+                0
+            </h2>
+
+            <p>
+                Attendance Records
+            </p>
+
         </div>
 
     </div>
 
 
-    <!-- ================================
-         ATTENDANCE STATUS
-    ================================= -->
+    <!-- ATTENDANCE STATUS -->
 
     <div class="dashboard-section">
 
-        <h2>Attendance Status</h2>
+        <h2>
+            Attendance Status
+        </h2>
+
 
         <div class="status-cards">
 
             <div class="card">
 
-                <h3>Present</h3>
+                <h3>
+                    Present
+                </h3>
 
                 <p id="presentCount">
                     0
@@ -122,7 +158,9 @@
 
             <div class="card">
 
-                <h3>Absent</h3>
+                <h3>
+                    Absent
+                </h3>
 
                 <p id="absentCount">
                     0
@@ -133,7 +171,9 @@
 
             <div class="card">
 
-                <h3>Late</h3>
+                <h3>
+                    Late
+                </h3>
 
                 <p id="lateCount">
                     0
@@ -146,13 +186,14 @@
     </div>
 
 
-    <!-- ================================
-         AVERAGE MARKS
-    ================================= -->
+    <!-- AVERAGE MARKS -->
 
     <div class="dashboard-section">
 
-        <h2>Average Marks per Subject</h2>
+        <h2>
+            Average Marks per Subject
+        </h2>
+
 
         <div class="table-container">
 
@@ -162,7 +203,9 @@
 
                     <tr>
 
-                        <th>Subject</th>
+                        <th>
+                            Subject
+                        </th>
 
                         <th>
                             Average Score
@@ -192,13 +235,14 @@
     </div>
 
 
-    <!-- ================================
-         RECENT STUDENTS
-    ================================= -->
+    <!-- RECENT STUDENTS -->
 
     <div class="dashboard-section">
 
-        <h2>Recent Students</h2>
+        <h2>
+            Recent Students
+        </h2>
+
 
         <div class="table-container">
 
@@ -208,11 +252,17 @@
 
                     <tr>
 
-                        <th>Name</th>
+                        <th>
+                            Name
+                        </th>
 
-                        <th>Age</th>
+                        <th>
+                            Age
+                        </th>
 
-                        <th>Subjects</th>
+                        <th>
+                            Subjects
+                        </th>
 
                     </tr>
 
@@ -238,13 +288,14 @@
     </div>
 
 
-    <!-- ================================
-         RECENT ATTENDANCE
-    ================================= -->
+    <!-- RECENT ATTENDANCE -->
 
     <div class="dashboard-section">
 
-        <h2>Recent Attendance</h2>
+        <h2>
+            Recent Attendance
+        </h2>
+
 
         <div class="table-container">
 
@@ -254,11 +305,17 @@
 
                     <tr>
 
-                        <th>Student</th>
+                        <th>
+                            Student
+                        </th>
 
-                        <th>Date</th>
+                        <th>
+                            Date
+                        </th>
 
-                        <th>Status</th>
+                        <th>
+                            Status
+                        </th>
 
                     </tr>
 
@@ -284,13 +341,14 @@
     </div>
 
 
-    <!-- ================================
-         RECENT MARKS
-    ================================= -->
+    <!-- RECENT MARKS -->
 
     <div class="dashboard-section">
 
-        <h2>Recent Marks</h2>
+        <h2>
+            Recent Marks
+        </h2>
+
 
         <div class="table-container">
 
@@ -300,11 +358,17 @@
 
                     <tr>
 
-                        <th>Student</th>
+                        <th>
+                            Student
+                        </th>
 
-                        <th>Subject</th>
+                        <th>
+                            Subject
+                        </th>
 
-                        <th>Score</th>
+                        <th>
+                            Score
+                        </th>
 
                     </tr>
 
@@ -330,9 +394,7 @@
     </div>
 
 
-    <!-- ================================
-         ERROR MESSAGE
-    ================================= -->
+    <!-- ERROR MESSAGE -->
 
     <div
         id="dashboardError"
@@ -340,9 +402,7 @@
     ></div>
 
 
-    <!-- ================================
-         LOADING MESSAGE
-    ================================= -->
+    <!-- LOADING MESSAGE -->
 
     <p id="dashboardLoading">
         Loading dashboard...
@@ -351,15 +411,11 @@
 </main>
 
 
-<!-- ================================
-     JAVASCRIPT
-================================= -->
+<script src="js/config.js"></script>
 
-<script src="./js/config.js"></script>
+<script src="js/api.js"></script>
 
-<script src="./js/api.js"></script>
-
-<script src="./js/dashboard.js"></script>
+<script src="js/dashboard.js"></script>
 
 
 </body>

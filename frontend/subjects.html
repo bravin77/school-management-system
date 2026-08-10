@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Subjects - School Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>School Management</h1>
+
+    <nav>
+
+        <a href="/home.html">Home</a>
+
+        <a href="/dashboard.html">Dashboard</a>
+
+        <a href="/students.html">Students</a>
+
+        <a href="/teachers.html">Teachers</a>
+
+        <a href="/subjects.html">Subjects</a>
+
+        <a href="/marks.html">Marks</a>
+
+        <a href="/attendance.html">Attendance</a>
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <h1>Subject Management</h1>
+
+
+    <form id="subjectForm">
+
+        <input
+            type="hidden"
+            id="subjectId"
+        >
+
+
+        <label for="subjectName">
+            Subject Name
+        </label>
+
+        <input
+            type="text"
+            id="subjectName"
+            required
+        >
+
+
+        <label for="subjectTeacher">
+            Teacher
+        </label>
+
+        <select
+            id="subjectTeacher"
+            required
+        >
+
+            <option value="">
+                Loading teachers...
+            </option>
+
+        </select>
+
+
+        <br>
+        <br>
+
+
+        <button type="submit">
+            Save Subject
+        </button>
+
+    </form>
+
+
+    <hr>
+
+
+    <h2>Subjects</h2>
+
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Name</th>
+
+                    <th>Teacher</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="subjectsTableBody">
+
+                <tr>
+
+                    <td colspan="4">
+                        Loading subjects...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+
+<script src="/js/config.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/subjects.js"></script>
+
+</body>
+
+</html>

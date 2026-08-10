@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Teachers - School Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+<header>
+
+    <h1>School Management</h1>
+
+    <nav>
+
+        <a href="/home.html">Home</a>
+
+        <a href="/dashboard.html">Dashboard</a>
+
+        <a href="/students.html">Students</a>
+
+        <a href="/teachers.html">Teachers</a>
+
+        <a href="/subjects.html">Subjects</a>
+
+        <a href="/marks.html">Marks</a>
+
+        <a href="/attendance.html">Attendance</a>
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <h1>Teacher Management</h1>
+
+
+    <div class="card">
+
+        <h2 id="teacherFormTitle">
+            Add Teacher
+        </h2>
+
+
+        <form id="teacherForm">
+
+            <input
+                type="hidden"
+                id="teacherId"
+            >
+
+
+            <div class="form-group">
+
+                <label for="teacherName">
+                    Name
+                </label>
+
+                <input
+                    type="text"
+                    id="teacherName"
+                    name="name"
+                    placeholder="Enter teacher name"
+                    required
+                >
+
+            </div>
+
+
+            <br>
+
+
+            <div class="form-group">
+
+                <label for="teacherEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="teacherEmail"
+                    name="email"
+                    placeholder="Enter teacher email"
+                    required
+                >
+
+            </div>
+
+
+            <br>
+
+
+            <button
+                type="submit"
+                id="teacherSubmitButton"
+            >
+                Save Teacher
+            </button>
+
+
+            <button
+                type="button"
+                id="cancelTeacherEdit"
+            >
+                Cancel
+            </button>
+
+        </form>
+
+
+        <p id="teacherMessage"></p>
+
+    </div>
+
+
+    <br>
+
+
+    <div class="card">
+
+        <h2>Teacher List</h2>
+
+
+        <div id="teacherLoading">
+            Loading teachers...
+        </div>
+
+
+        <div class="table-container">
+
+            <table
+                id="teachersTable"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Name</th>
+
+                        <th>Email</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="teachersTableBody">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <p
+            id="noTeachersMessage"
+            style="display: none;"
+        >
+            No teachers found.
+        </p>
+
+    </div>
+
+</main>
+
+
+<script src="/js/config.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/teachers.js"></script>
+
+</body>
+
+</html>

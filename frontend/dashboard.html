@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard - School Management System</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>School Management</h1>
+
+        <nav>
+
+            <a href="home.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="students.html">Students</a>
+            <a href="teachers.html">Teachers</a>
+            <a href="subjects.html">Subjects</a>
+            <a href="marks.html">Marks</a>
+            <a href="attendance.html">Attendance</a>
+
+        </nav>
+
+    </header>
+
+
+    <main class="container">
+
+        <h1>School Management Dashboard</h1>
+
+
+        <div class="dashboard-cards">
+
+            <div class="card">
+                <h2 id="studentCount">0</h2>
+                <p>Total Students</p>
+            </div>
+
+            <div class="card">
+                <h2 id="teacherCount">0</h2>
+                <p>Total Teachers</p>
+            </div>
+
+            <div class="card">
+                <h2 id="subjectCount">0</h2>
+                <p>Total Subjects</p>
+            </div>
+
+            <div class="card">
+                <h2 id="marksCount">0</h2>
+                <p>Marks Recorded</p>
+            </div>
+
+            <div class="card">
+                <h2 id="attendanceCount">0</h2>
+                <p>Attendance Records</p>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section">
+
+            <h2>Attendance Status</h2>
+
+            <div class="status-cards">
+
+                <div class="card">
+                    <h3>Present</h3>
+                    <p id="presentCount">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Absent</h3>
+                    <p id="absentCount">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Late</h3>
+                    <p id="lateCount">0</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section">
+
+            <h2>Average Marks per Subject</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Subject</th>
+                            <th>Average Score</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="averageMarksBody">
+
+                        <tr>
+                            <td colspan="2">
+                                Loading average marks...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section">
+
+            <h2>Recent Students</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Subjects</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recentStudentsBody">
+
+                        <tr>
+                            <td colspan="3">
+                                Loading students...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section">
+
+            <h2>Recent Attendance</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recentAttendanceBody">
+
+                        <tr>
+                            <td colspan="3">
+                                Loading attendance...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section">
+
+            <h2>Recent Marks</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Subject</th>
+                            <th>Score</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="recentMarksBody">
+
+                        <tr>
+                            <td colspan="3">
+                                Loading marks...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="dashboardError"
+            style="display: none;"
+        ></div>
+
+
+        <p id="dashboardLoading">
+            Loading dashboard...
+        </p>
+
+    </main>
+
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

@@ -2,31 +2,14 @@
 
 /*
 ============================================================
-SCHOOL MANAGEMENT SYSTEM
 FRONTEND API CONFIGURATION
 ============================================================
-
-LOCAL DEVELOPMENT
------------------
-Django serves the frontend and backend:
-
-http://127.0.0.1:8000
-
-PRODUCTION
-----------
-Vercel serves the frontend.
-
-Render serves the Django REST API.
-============================================================
 */
-
 
 const API_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === "localhost"
-
         ? ""
-
         : "https://school-management-backend-igpt.onrender.com";
 
 
@@ -58,20 +41,7 @@ const API = {
 
 /*
 ============================================================
-BUILD API URL
-============================================================
-
-Example:
-
-apiUrl(API.students, 5)
-
-returns:
-
-Local:
-    /api/students/5/
-
-Production:
-    https://school-management-backend-igpt.onrender.com/api/students/5/
+BUILD URL WITH ID
 ============================================================
 */
 

@@ -5,17 +5,12 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Students - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -28,19 +23,33 @@
 
     <nav>
 
-        <a href="/home.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="/dashboard.html">Dashboard</a>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
 
-        <a href="/students.html">Students</a>
+        <a href="students.html">
+            Students
+        </a>
 
-        <a href="/teachers.html">Teachers</a>
+        <a href="teachers.html">
+            Teachers
+        </a>
 
-        <a href="/subjects.html">Subjects</a>
+        <a href="subjects.html">
+            Subjects
+        </a>
 
-        <a href="/marks.html">Marks</a>
+        <a href="marks.html">
+            Marks
+        </a>
 
-        <a href="/attendance.html">Attendance</a>
+        <a href="attendance.html">
+            Attendance
+        </a>
 
     </nav>
 
@@ -49,121 +58,169 @@
 
 <main class="container">
 
-    <h1>Student Management</h1>
+    <h1>
+        Student Management
+    </h1>
 
 
-    <form id="studentForm">
+    <!-- STUDENT FORM -->
 
-        <input
-            type="hidden"
-            id="studentId"
-        >
+    <div class="card">
 
-
-        <label for="studentName">
-            Name
-        </label>
-
-        <input
-            type="text"
-            id="studentName"
-            required
-        >
+        <h2>
+            Add / Edit Student
+        </h2>
 
 
-        <label for="studentAge">
-            Age
-        </label>
+        <form id="studentForm">
 
-        <input
-            type="number"
-            id="studentAge"
-            min="1"
-            required
-        >
+            <input
+                type="hidden"
+                id="studentId"
+            >
 
 
-        <label for="studentSubjects">
-            Subjects
-        </label>
+            <div class="form-group">
 
-        <select
-            id="studentSubjects"
-            multiple
-            size="6"
-        >
+                <label for="studentName">
+                    Name
+                </label>
 
-            <option>
-                Loading subjects...
-            </option>
+                <input
+                    type="text"
+                    id="studentName"
+                    required
+                >
 
-        </select>
+            </div>
 
 
-        <p>
-            Hold Ctrl while clicking to select
-            multiple subjects.
-        </p>
+            <div class="form-group">
+
+                <label for="studentAge">
+                    Age
+                </label>
+
+                <input
+                    type="number"
+                    id="studentAge"
+                    min="1"
+                    required
+                >
+
+            </div>
 
 
-        <button type="submit">
-            Save Student
-        </button>
+            <div class="form-group">
 
-    </form>
+                <label for="studentSubjects">
+                    Subjects
+                </label>
+
+                <select
+                    id="studentSubjects"
+                    multiple
+                    size="6"
+                >
+
+                    <option>
+                        Loading subjects...
+                    </option>
+
+                </select>
+
+                <p>
+                    Hold Ctrl while clicking to select
+                    multiple subjects.
+                </p>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Save Student
+            </button>
+
+        </form>
+
+    </div>
 
 
     <hr>
 
 
-    <h2>Student List</h2>
+    <!-- STUDENT LIST -->
+
+    <div class="card">
+
+        <h2>
+            Student List
+        </h2>
 
 
-    <div class="table-container">
+        <div class="table-container">
 
-        <table>
+            <table>
 
-            <thead>
+                <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>ID</th>
+                        <th>
+                            ID
+                        </th>
 
-                    <th>Name</th>
+                        <th>
+                            Name
+                        </th>
 
-                    <th>Age</th>
+                        <th>
+                            Age
+                        </th>
 
-                    <th>Subjects</th>
+                        <th>
+                            Subjects
+                        </th>
 
-                    <th>Actions</th>
+                        <th class="actions-column">
+                            Actions
+                        </th>
 
-                </tr>
+                    </tr>
 
-            </thead>
+                </thead>
 
 
-            <tbody id="studentsTableBody">
+                <tbody id="studentsTableBody">
 
-                <tr>
+                    <tr>
 
-                    <td colspan="5">
-                        Loading students...
-                    </td>
+                        <td colspan="5">
+                            Loading students...
+                        </td>
 
-                </tr>
+                    </tr>
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 
 </main>
 
 
-<script src="/js/config.js"></script>
-<script src="/js/api.js"></script>
-<script src="/js/students.js"></script>
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/students.js"></script>
+
 
 </body>
 

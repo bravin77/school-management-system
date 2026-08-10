@@ -5,17 +5,12 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Subjects - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -28,19 +23,33 @@
 
     <nav>
 
-        <a href="/home.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="/dashboard.html">Dashboard</a>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
 
-        <a href="/students.html">Students</a>
+        <a href="students.html">
+            Students
+        </a>
 
-        <a href="/teachers.html">Teachers</a>
+        <a href="teachers.html">
+            Teachers
+        </a>
 
-        <a href="/subjects.html">Subjects</a>
+        <a href="subjects.html">
+            Subjects
+        </a>
 
-        <a href="/marks.html">Marks</a>
+        <a href="marks.html">
+            Marks
+        </a>
 
-        <a href="/attendance.html">Attendance</a>
+        <a href="attendance.html">
+            Attendance
+        </a>
 
     </nav>
 
@@ -49,104 +58,143 @@
 
 <main class="container">
 
-    <h1>Subject Management</h1>
+    <h1>
+        Subject Management
+    </h1>
 
 
-    <form id="subjectForm">
+    <!-- SUBJECT FORM -->
 
-        <input
-            type="hidden"
-            id="subjectId"
-        >
+    <div class="card">
 
-
-        <label for="subjectName">
-            Subject Name
-        </label>
-
-        <input
-            type="text"
-            id="subjectName"
-            required
-        >
+        <h2>
+            Add / Edit Subject
+        </h2>
 
 
-        <label for="subjectTeacher">
-            Teacher
-        </label>
+        <form id="subjectForm">
 
-        <select
-            id="subjectTeacher"
-            required
-        >
-
-            <option value="">
-                Loading teachers...
-            </option>
-
-        </select>
+            <input
+                type="hidden"
+                id="subjectId"
+            >
 
 
-        <br>
-        <br>
+            <div class="form-group">
+
+                <label for="subjectName">
+                    Subject Name
+                </label>
+
+                <input
+                    type="text"
+                    id="subjectName"
+                    required
+                >
+
+            </div>
 
 
-        <button type="submit">
-            Save Subject
-        </button>
+            <div class="form-group">
 
-    </form>
+                <label for="subjectTeacher">
+                    Teacher
+                </label>
+
+                <select
+                    id="subjectTeacher"
+                    required
+                >
+
+                    <option value="">
+                        Loading teachers...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Save Subject
+            </button>
+
+        </form>
+
+    </div>
 
 
     <hr>
 
 
-    <h2>Subjects</h2>
+    <!-- SUBJECT LIST -->
+
+    <div class="card">
+
+        <h2>
+            Subjects
+        </h2>
 
 
-    <div class="table-container">
+        <div class="table-container">
 
-        <table>
+            <table>
 
-            <thead>
+                <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>ID</th>
+                        <th>
+                            ID
+                        </th>
 
-                    <th>Name</th>
+                        <th>
+                            Name
+                        </th>
 
-                    <th>Teacher</th>
+                        <th>
+                            Teacher
+                        </th>
 
-                    <th>Actions</th>
+                        <th class="actions-column">
+                            Actions
+                        </th>
 
-                </tr>
+                    </tr>
 
-            </thead>
+                </thead>
 
 
-            <tbody id="subjectsTableBody">
+                <tbody id="subjectsTableBody">
 
-                <tr>
+                    <tr>
 
-                    <td colspan="4">
-                        Loading subjects...
-                    </td>
+                        <td colspan="4">
+                            Loading subjects...
+                        </td>
 
-                </tr>
+                    </tr>
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 
 </main>
 
 
-<script src="/js/config.js"></script>
-<script src="/js/api.js"></script>
-<script src="/js/subjects.js"></script>
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/subjects.js"></script>
+
 
 </body>
 

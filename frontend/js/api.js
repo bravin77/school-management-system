@@ -4,32 +4,18 @@
 ============================================================
 SHARED API HELPER
 ============================================================
-
-config.js MUST be loaded before this file.
-
-config.js provides:
-
-    API_BASE_URL
-
-The same helper works for:
-
-LOCAL:
-    http://127.0.0.1:8000
-
-PRODUCTION:
-    https://your-render-backend.onrender.com
-============================================================
 */
 
-
-/* ==========================================================
-   GET
-========================================================== */
+/*
+============================================================
+GET
+============================================================
+*/
 
 async function apiGet(endpoint) {
 
     const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
+        endpoint,
         {
             method: "GET",
 
@@ -42,40 +28,32 @@ async function apiGet(endpoint) {
     );
 
 
-    const responseText =
-        await response.text();
-
-
     if (!response.ok) {
 
+        const errorText =
+            await response.text();
+
         throw new Error(
-            `GET ${endpoint} failed: ` +
-            `${response.status} ${responseText}`
+            `GET failed: ${response.status} ${errorText}`
         );
 
     }
 
 
-    if (!responseText) {
-
-        return null;
-
-    }
-
-
-    return JSON.parse(responseText);
-
+    return await response.json();
 }
 
 
-/* ==========================================================
-   POST
-========================================================== */
+/*
+============================================================
+POST
+============================================================
+*/
 
 async function apiPost(endpoint, data) {
 
     const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
+        endpoint,
         {
             method: "POST",
 
@@ -100,8 +78,7 @@ async function apiPost(endpoint, data) {
     if (!response.ok) {
 
         throw new Error(
-            `POST ${endpoint} failed: ` +
-            `${response.status} ${responseText}`
+            `POST failed: ${response.status} ${responseText}`
         );
 
     }
@@ -115,18 +92,19 @@ async function apiPost(endpoint, data) {
 
 
     return JSON.parse(responseText);
-
 }
 
 
-/* ==========================================================
-   PUT
-========================================================== */
+/*
+============================================================
+PUT
+============================================================
+*/
 
 async function apiPut(endpoint, data) {
 
     const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
+        endpoint,
         {
             method: "PUT",
 
@@ -151,8 +129,7 @@ async function apiPut(endpoint, data) {
     if (!response.ok) {
 
         throw new Error(
-            `PUT ${endpoint} failed: ` +
-            `${response.status} ${responseText}`
+            `PUT failed: ${response.status} ${responseText}`
         );
 
     }
@@ -166,18 +143,19 @@ async function apiPut(endpoint, data) {
 
 
     return JSON.parse(responseText);
-
 }
 
 
-/* ==========================================================
-   DELETE
-========================================================== */
+/*
+============================================================
+DELETE
+============================================================
+*/
 
 async function apiDelete(endpoint) {
 
     const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
+        endpoint,
         {
             method: "DELETE",
 
@@ -189,28 +167,27 @@ async function apiDelete(endpoint) {
     );
 
 
-    const responseText =
-        await response.text();
-
-
     if (!response.ok) {
 
+        const errorText =
+            await response.text();
+
         throw new Error(
-            `DELETE ${endpoint} failed: ` +
-            `${response.status} ${responseText}`
+            `DELETE failed: ${response.status} ${errorText}`
         );
 
     }
 
 
     return true;
-
 }
 
 
-/* ==========================================================
-   GET ARRAY
-========================================================== */
+/*
+============================================================
+GET ARRAY
+============================================================
+*/
 
 async function apiGetArray(endpoint) {
 
@@ -219,12 +196,7 @@ async function apiGetArray(endpoint) {
 
 
     /*
-    Normal Django REST Framework response:
-
-    [
-        {...},
-        {...}
-    ]
+    Normal DRF response
     */
 
     if (Array.isArray(data)) {
@@ -235,12 +207,7 @@ async function apiGetArray(endpoint) {
 
 
     /*
-    Paginated DRF response:
-
-    {
-        "count": 10,
-        "results": [...]
-    }
+    Paginated DRF response
     */
 
     if (
@@ -256,5 +223,4 @@ async function apiGetArray(endpoint) {
     throw new Error(
         `Unexpected API response from ${endpoint}`
     );
-
 }

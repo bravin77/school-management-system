@@ -1,31 +1,24 @@
 "use strict";
 
 /*
- * ============================================================
- * SCHOOL MANAGEMENT SYSTEM
- * Frontend API Configuration
- * ============================================================
- *
- * LOCAL DEVELOPMENT:
- *
- * Django serves both frontend and backend:
- *
- * http://127.0.0.1:8000
- *
- *
- * PRODUCTION:
- *
- * Vercel serves the frontend.
- * Render serves the Django REST API.
- *
- * Example:
- *
- * https://school-management-system.onrender.com
- *
- * We will replace the production URL after Render
- * gives us the actual URL.
- * ============================================================
- */
+============================================================
+SCHOOL MANAGEMENT SYSTEM
+FRONTEND API CONFIGURATION
+============================================================
+
+LOCAL DEVELOPMENT
+-----------------
+Django serves the frontend and backend:
+
+http://127.0.0.1:8000
+
+PRODUCTION
+----------
+Vercel serves the frontend.
+
+Render serves the Django REST API.
+============================================================
+*/
 
 
 const API_BASE_URL =
@@ -34,14 +27,14 @@ const API_BASE_URL =
 
         ? ""
 
-        : "https://YOUR-RENDER-BACKEND.onrender.com";
+        : "https://school-management-backend-igpt.onrender.com";
 
 
 /*
- * ============================================================
- * API ENDPOINTS
- * ============================================================
- */
+============================================================
+API ENDPOINTS
+============================================================
+*/
 
 const API = {
 
@@ -64,37 +57,29 @@ const API = {
 
 
 /*
- * ============================================================
- * HELPER FUNCTION
- * ============================================================
- *
- * Use this when a JavaScript file needs to construct
- * an endpoint from an ID.
- *
- * Example:
- *
- * apiUrl(API.marks, 5)
- *
- * produces:
- *
- * /api/marks/5/
- *
- * locally, or:
- *
- * https://your-render-url.onrender.com/api/marks/5/
- *
- * in production.
- * ============================================================
- */
+============================================================
+BUILD API URL
+============================================================
+
+Example:
+
+apiUrl(API.students, 5)
+
+returns:
+
+Local:
+    /api/students/5/
+
+Production:
+    https://school-management-backend-igpt.onrender.com/api/students/5/
+============================================================
+*/
 
 function apiUrl(endpoint, id = null) {
 
     if (id === null || id === undefined) {
-
         return endpoint;
-
     }
 
     return `${endpoint}${id}/`;
-
 }

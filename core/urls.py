@@ -1,13 +1,13 @@
 from django.contrib import admin
-from django.urls import path, include
-
+from django.urls import include, path
 
 urlpatterns = [
 
-    # Django Admin
     path("admin/", admin.site.urls),
 
     # REST API
     path("api/", include("school.urls")),
 
+    # Frontend pages
+    path("", include("school.web_urls")),
 ]

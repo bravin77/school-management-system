@@ -1,60 +1,48 @@
 from django.urls import path
+from . import views
 
-from .views import (
-
-    home,
-
-    students_page,
-
-    teachers_page,
-
-    subjects_page,
-
-    marks_page,
-
-    attendance_page,
-
-     dashboard,
-
-)
 
 urlpatterns = [
 
-    path("", home, name="home"),
+    path(
+        "",
+        views.home,
+        name="home"
+    ),
+
+    path(
+        "dashboard/",
+        views.dashboard,
+        name="dashboard"
+    ),
 
     path(
         "students/",
-        students_page,
+        views.students_page,
         name="students"
     ),
 
     path(
         "teachers/",
-        teachers_page,
+        views.teachers_page,
         name="teachers"
     ),
 
     path(
         "subjects/",
-        subjects_page,
+        views.subjects_page,
         name="subjects"
     ),
 
     path(
         "marks/",
-        marks_page,
+        views.marks_page,
         name="marks"
     ),
 
     path(
         "attendance/",
-        attendance_page,
+        views.attendance_page,
         name="attendance"
     ),
-    path(
-    "dashboard/",
-    dashboard,
-    name="dashboard"
-    ),
-
 ]

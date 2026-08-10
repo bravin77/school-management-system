@@ -1,5 +1,11 @@
 "use strict";
 
+/*
+=========================================================
+STUDENT MANAGEMENT MODULE
+=========================================================
+*/
+
 const STUDENTS_API = "/api/students/";
 const SUBJECTS_API = "/api/subjects/";
 
@@ -7,94 +13,73 @@ let students = [];
 let subjects = [];
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+/*
+=========================================================
+INITIALIZATION
+=========================================================
+*/
 
-        loadSubjects();
-        loadStudents();
+document.addEventListener("DOMContentLoaded", function () {
 
-        const form =
-            document.getElementById(
-                "studentForm"
-            );
+    console.log("STUDENTS.JS LOADED");
 
-        if (form) {
+    loadSubjects();
+    loadStudents();
 
-            form.addEventListener(
-                "submit",
-                saveStudent
-            );
+    const form = document.getElementById("studentForm");
 
-        }
-
+    if (form) {
+        form.addEventListener("submit", saveStudent);
     }
-);
 
+});
+
+
+/*
+=========================================================
+LOAD SUBJECTS
+=========================================================
+*/
 
 async function loadSubjects() {
 
     try {
 
-        const response =
-            await fetch(SUBJECTS_API);
+        console.log("Loading subjects...");
 
-        if (!response.ok) {
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
-
-        const data =
-            await response.json();
-
-        subjects =
-            Array.isArray(data)
-                ? data
-                : data.results || [];
-
+        subjects = await apiGetArray(SUBJECTS_API);
 
         const select =
-            document.getElementById(
-                "studentSubjects"
-            );
-
+            document.getElementById("studentSubjects");
 
         if (!select) {
 
             console.error(
-                "studentSubjects not found"
+                "studentSubjects not found in students.html"
             );
 
             return;
-
         }
-
 
         select.innerHTML = "";
 
+        subjects.forEach(function (subject) {
 
-        subjects.forEach(
-            function (subject) {
+            const option =
+                document.createElement("option");
 
-                const option =
-                    document.createElement(
-                        "option"
-                    );
+            option.value = subject.id;
 
-                option.value =
-                    subject.id;
+            option.textContent = subject.name;
 
-                option.textContent =
-                    subject.name;
+            select.appendChild(option);
 
-                select.appendChild(
-                    option
-                );
+        });
 
-            }
+        console.log(
+            "Subjects loaded:",
+            subjects.length
         );
-
 
     } catch (error) {
 
@@ -108,39 +93,26 @@ async function loadSubjects() {
 }
 
 
+/*
+=========================================================
+LOAD STUDENTS
+=========================================================
+*/
+
 async function loadStudents() {
 
     try {
 
-        const response =
-            await fetch(
-                STUDENTS_API,
-                {
-                    cache: "no-store"
-                }
-            );
+        console.log("Loading students...");
 
-        if (!response.ok) {
+        students = await apiGetArray(STUDENTS_API);
 
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        students =
-            Array.isArray(data)
-                ? data
-                : data.results || [];
-
+        console.log(
+            "Students loaded:",
+            students.length
+        );
 
         displayStudents();
-
 
     } catch (error) {
 
@@ -154,6 +126,12 @@ async function loadStudents() {
 }
 
 
+/*
+=========================================================
+DISPLAY STUDENTS
+=========================================================
+*/
+
 function displayStudents() {
 
     const tbody =
@@ -161,143 +139,135 @@ function displayStudents() {
             "studentsTableBody"
         );
 
-
     if (!tbody) {
 
         console.error(
-            "studentsTableBody not found"
+            "studentsTableBody not found in students.html"
         );
 
         return;
-
     }
-
 
     tbody.innerHTML = "";
 
+    if (students.length === 0) {
 
-    students.forEach(
-        function (student) {
-
-            const subjectsText =
-                student.subject_names &&
-                student.subject_names.length
-                    ? student.subject_names.join(
-                        ", "
-                    )
-                    : "No subjects";
-
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            row.innerHTML = `
-
-                <td>${student.id}</td>
-
-                <td>
-                    ${escapeHTML(
-                        student.name
-                    )}
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5">
+                    No students found.
                 </td>
+            </tr>
+        `;
 
-                <td>
-                    ${student.age}
-                </td>
+        return;
+    }
 
-                <td>
-                    ${escapeHTML(
-                        subjectsText
-                    )}
-                </td>
+    students.forEach(function (student) {
 
-                <td>
+        const subjectsText =
+            student.subject_names &&
+            student.subject_names.length
+                ? student.subject_names.join(", ")
+                : "No subjects";
 
-                    <button
-                        type="button"
-                        onclick="editStudent(${student.id})">
-                        Edit
-                    </button>
+        const row =
+            document.createElement("tr");
 
-                    <button
-                        type="button"
-                        onclick="deleteStudent(${student.id})">
-                        Delete
-                    </button>
+        row.innerHTML = `
 
-                </td>
+            <td>
+                ${escapeHTML(student.id)}
+            </td>
 
-            `;
+            <td>
+                ${escapeHTML(student.name)}
+            </td>
 
+            <td>
+                ${escapeHTML(student.age)}
+            </td>
 
-            tbody.appendChild(row);
+            <td>
+                ${escapeHTML(subjectsText)}
+            </td>
 
-        }
-    );
+            <td>
+
+                <button
+                    type="button"
+                    onclick="editStudent(${student.id})">
+                    Edit
+                </button>
+
+                <button
+                    type="button"
+                    onclick="deleteStudent(${student.id})">
+                    Delete
+                </button>
+
+            </td>
+
+        `;
+
+        tbody.appendChild(row);
+
+    });
 
 }
 
 
+/*
+=========================================================
+SAVE / UPDATE STUDENT
+=========================================================
+*/
+
 async function saveStudent(event) {
 
     event.preventDefault();
-
 
     const id =
         document.getElementById(
             "studentId"
         ).value;
 
-
     const name =
         document.getElementById(
             "studentName"
         ).value.trim();
-
 
     const age =
         document.getElementById(
             "studentAge"
         ).value;
 
-
     const subjectSelect =
         document.getElementById(
             "studentSubjects"
         );
 
-
     const selectedSubjects =
         Array.from(
             subjectSelect.selectedOptions
         ).map(
-            option =>
-                Number(option.value)
+            option => Number(option.value)
         );
 
 
     if (!name) {
 
-        alert(
-            "Enter student name."
-        );
+        alert("Enter student name.");
 
         return;
-
     }
 
 
     if (!age) {
 
-        alert(
-            "Enter student age."
-        );
+        alert("Enter student age.");
 
         return;
-
     }
 
 
@@ -307,90 +277,46 @@ async function saveStudent(event) {
 
         age: Number(age),
 
-        subjects:
-            selectedSubjects
+        subjects: selectedSubjects
 
     };
 
 
-    let url =
-        STUDENTS_API;
-
-    let method =
-        "POST";
-
-
-    if (id) {
-
-        url =
-            `${STUDENTS_API}${id}/`;
-
-        method =
-            "PUT";
-
-    }
-
-
     try {
 
-        const response =
-            await fetch(
-                url,
-                {
-                    method: method,
+        console.log(
+            id
+                ? "Updating student..."
+                : "Saving student..."
+        );
 
-                    headers: {
-                        "Content-Type":
-                            "application/json",
 
-                        "Accept":
-                            "application/json"
-                    },
+        if (id) {
 
-                    body:
-                        JSON.stringify(
-                            payload
-                        )
-                }
+            await apiPut(
+                `${STUDENTS_API}${id}/`,
+                payload
             );
 
+            alert(
+                "Student updated successfully."
+            );
 
-        const text =
-            await response.text();
+        } else {
 
+            await apiPost(
+                STUDENTS_API,
+                payload
+            );
 
-        if (!response.ok) {
-
-            throw new Error(
-                text ||
-                `HTTP ${response.status}`
+            alert(
+                "Student saved successfully."
             );
 
         }
 
 
-        console.log(
-            "Student saved:",
-            text
-        );
-
-
-        alert(
-            id
-                ? "Student updated successfully."
-                : "Student saved successfully."
-        );
-
-
-        document.getElementById(
-            "studentForm"
-        ).reset();
-
-
-        document.getElementById(
-            "studentId"
-        ).value = "";
-
+        resetStudentForm();
 
         await loadStudents();
 
@@ -402,9 +328,8 @@ async function saveStudent(event) {
             error
         );
 
-
         alert(
-            "Failed to save student:\n" +
+            "Failed to save student:\n\n" +
             error.message
         );
 
@@ -412,6 +337,12 @@ async function saveStudent(event) {
 
 }
 
+
+/*
+=========================================================
+EDIT STUDENT
+=========================================================
+*/
 
 function editStudent(id) {
 
@@ -422,8 +353,10 @@ function editStudent(id) {
                 Number(id)
         );
 
-
     if (!student) {
+
+        alert("Student not found.");
+
         return;
     }
 
@@ -452,51 +385,60 @@ function editStudent(id) {
         );
 
 
-    Array.from(
-        select.options
-    ).forEach(
-        function (option) {
+    if (select) {
 
-            option.selected =
-                student.subjects.includes(
-                    Number(option.value)
-                );
+        const studentSubjects =
+            Array.isArray(student.subjects)
+                ? student.subjects
+                : [];
 
-        }
-    );
+        Array.from(
+            select.options
+        ).forEach(
+            function (option) {
+
+                option.selected =
+                    studentSubjects.includes(
+                        Number(option.value)
+                    );
+
+            }
+        );
+
+    }
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
 
 
+/*
+=========================================================
+DELETE STUDENT
+=========================================================
+*/
+
 async function deleteStudent(id) {
 
-    if (
-        !confirm(
+    const confirmed =
+        confirm(
             "Delete this student?"
-        )
-    ) {
+        );
+
+    if (!confirmed) {
         return;
     }
 
 
     try {
 
-        const response =
-            await fetch(
-                `${STUDENTS_API}${id}/`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-
-        }
+        await apiDelete(
+            `${STUDENTS_API}${id}/`
+        );
 
 
         alert(
@@ -504,21 +446,63 @@ async function deleteStudent(id) {
         );
 
 
+        resetStudentForm();
+
         await loadStudents();
 
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Student delete error:",
+            error
+        );
 
         alert(
-            "Failed to delete student."
+            "Failed to delete student:\n\n" +
+            error.message
         );
 
     }
 
 }
 
+
+/*
+=========================================================
+RESET FORM
+=========================================================
+*/
+
+function resetStudentForm() {
+
+    const form =
+        document.getElementById(
+            "studentForm"
+        );
+
+    if (form) {
+        form.reset();
+    }
+
+
+    const idInput =
+        document.getElementById(
+            "studentId"
+        );
+
+    if (idInput) {
+        idInput.value = "";
+    }
+
+}
+
+
+/*
+=========================================================
+ESCAPE HTML
+=========================================================
+*/
 
 function escapeHTML(value) {
 

@@ -5,17 +5,12 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Marks - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -28,19 +23,33 @@
 
     <nav>
 
-        <a href="/home.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="/dashboard.html">Dashboard</a>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
 
-        <a href="/students.html">Students</a>
+        <a href="students.html">
+            Students
+        </a>
 
-        <a href="/teachers.html">Teachers</a>
+        <a href="teachers.html">
+            Teachers
+        </a>
 
-        <a href="/subjects.html">Subjects</a>
+        <a href="subjects.html">
+            Subjects
+        </a>
 
-        <a href="/marks.html">Marks</a>
+        <a href="marks.html">
+            Marks
+        </a>
 
-        <a href="/attendance.html">Attendance</a>
+        <a href="attendance.html">
+            Attendance
+        </a>
 
     </nav>
 
@@ -49,140 +58,177 @@
 
 <main class="container">
 
-    <h1>Marks Management</h1>
+    <h1>
+        Marks Management
+    </h1>
 
 
-    <h2>Record Mark</h2>
+    <!-- =========================
+         MARK FORM
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Record Mark
+        </h2>
 
 
-    <form id="marksForm">
-
-        <input
-            type="hidden"
-            id="markId"
-        >
-
-
-        <div class="form-group">
-
-            <label for="markStudent">
-                Student
-            </label>
-
-            <select
-                id="markStudent"
-                required
-            >
-
-                <option value="">
-                    Loading students...
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="markSubject">
-                Subject
-            </label>
-
-            <select
-                id="markSubject"
-                required
-            >
-
-                <option value="">
-                    Loading subjects...
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="markScore">
-                Score
-            </label>
+        <form id="marksForm">
 
             <input
-                type="number"
-                id="markScore"
-                min="0"
-                max="100"
-                required
+                type="hidden"
+                id="markId"
             >
 
-        </div>
+
+            <div class="form-group">
+
+                <label for="markStudent">
+                    Student
+                </label>
+
+                <select
+                    id="markStudent"
+                    required
+                >
+
+                    <option value="">
+                        Loading students...
+                    </option>
+
+                </select>
+
+            </div>
 
 
-        <button
-            type="submit"
-            class="btn-primary"
-        >
-            Save Mark
-        </button>
+            <div class="form-group">
 
-    </form>
+                <label for="markSubject">
+                    Subject
+                </label>
+
+                <select
+                    id="markSubject"
+                    required
+                >
+
+                    <option value="">
+                        Loading subjects...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="markScore">
+                    Score
+                </label>
+
+                <input
+                    type="number"
+                    id="markScore"
+                    min="0"
+                    max="100"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn-primary"
+            >
+                Save Mark
+            </button>
+
+        </form>
+
+    </div>
 
 
     <hr>
 
 
-    <h2>Marks List</h2>
+    <!-- =========================
+         MARKS LIST
+    ========================== -->
+
+    <div class="card">
+
+        <h2>
+            Marks List
+        </h2>
 
 
-    <div class="table-container">
+        <div class="table-container">
 
-        <table>
+            <table>
 
-            <thead>
+                <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>ID</th>
+                        <th>
+                            ID
+                        </th>
 
-                    <th>Student</th>
+                        <th>
+                            Student
+                        </th>
 
-                    <th>Subject</th>
+                        <th>
+                            Subject
+                        </th>
 
-                    <th>Score</th>
+                        <th>
+                            Score
+                        </th>
 
-                    <th class="actions-column">
-                        Actions
-                    </th>
+                        <th class="actions-column">
+                            Actions
+                        </th>
 
-                </tr>
+                    </tr>
 
-            </thead>
+                </thead>
 
 
-            <tbody id="marksTableBody">
+                <tbody id="marksTableBody">
 
-                <tr>
+                    <tr>
 
-                    <td colspan="5">
-                        Loading marks...
-                    </td>
+                        <td colspan="5">
+                            Loading marks...
+                        </td>
 
-                </tr>
+                    </tr>
 
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 
 </main>
 
 
-<script src="/js/config.js"></script>
-<script src="/js/api.js"></script>
-<script src="/js/marks.js"></script>
+<!-- =========================
+     JAVASCRIPT
+========================== -->
+
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/marks.js"></script>
+
 
 </body>
 

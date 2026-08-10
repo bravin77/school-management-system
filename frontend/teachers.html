@@ -5,17 +5,12 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Teachers - School Management System</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
 
@@ -28,19 +23,33 @@
 
     <nav>
 
-        <a href="/home.html">Home</a>
+        <a href="index.html">
+            Home
+        </a>
 
-        <a href="/dashboard.html">Dashboard</a>
+        <a href="dashboard.html">
+            Dashboard
+        </a>
 
-        <a href="/students.html">Students</a>
+        <a href="students.html">
+            Students
+        </a>
 
-        <a href="/teachers.html">Teachers</a>
+        <a href="teachers.html">
+            Teachers
+        </a>
 
-        <a href="/subjects.html">Subjects</a>
+        <a href="subjects.html">
+            Subjects
+        </a>
 
-        <a href="/marks.html">Marks</a>
+        <a href="marks.html">
+            Marks
+        </a>
 
-        <a href="/attendance.html">Attendance</a>
+        <a href="attendance.html">
+            Attendance
+        </a>
 
     </nav>
 
@@ -49,8 +58,12 @@
 
 <main class="container">
 
-    <h1>Teacher Management</h1>
+    <h1>
+        Teacher Management
+    </h1>
 
+
+    <!-- TEACHER FORM -->
 
     <div class="card">
 
@@ -84,9 +97,6 @@
             </div>
 
 
-            <br>
-
-
             <div class="form-group">
 
                 <label for="teacherEmail">
@@ -104,12 +114,10 @@
             </div>
 
 
-            <br>
-
-
             <button
                 type="submit"
                 id="teacherSubmitButton"
+                class="btn-primary"
             >
                 Save Teacher
             </button>
@@ -133,9 +141,13 @@
     <br>
 
 
+    <!-- TEACHER LIST -->
+
     <div class="card">
 
-        <h2>Teacher List</h2>
+        <h2>
+            Teacher List
+        </h2>
 
 
         <div id="teacherLoading">
@@ -153,13 +165,21 @@
 
                     <tr>
 
-                        <th>ID</th>
+                        <th>
+                            ID
+                        </th>
 
-                        <th>Name</th>
+                        <th>
+                            Name
+                        </th>
 
-                        <th>Email</th>
+                        <th>
+                            Email
+                        </th>
 
-                        <th>Actions</th>
+                        <th class="actions-column">
+                            Actions
+                        </th>
 
                     </tr>
 
@@ -167,6 +187,14 @@
 
 
                 <tbody id="teachersTableBody">
+
+                    <tr>
+
+                        <td colspan="4">
+                            Loading teachers...
+                        </td>
+
+                    </tr>
 
                 </tbody>
 
@@ -187,9 +215,12 @@
 </main>
 
 
-<script src="/js/config.js"></script>
-<script src="/js/api.js"></script>
-<script src="/js/teachers.js"></script>
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/teachers.js"></script>
+
 
 </body>
 

@@ -6,9 +6,6 @@ SHARED API HELPER
 =========================================================
 */
 
-const API_BASE_URL =
-    "https://school-management-backend-igpt.onrender.com";
-
 
 /*
 =========================================================
@@ -18,7 +15,7 @@ BUILD API URL
 
 function buildApiUrl(endpoint) {
 
-    return `${API_BASE_URL}${endpoint}`;
+    return `${window.API_BASE_URL}${endpoint}`;
 
 }
 
@@ -31,22 +28,29 @@ GET
 
 async function apiGet(endpoint) {
 
-    const url = buildApiUrl(endpoint);
+    const url =
+        buildApiUrl(endpoint);
 
-    console.log("API GET:", url);
-
-    const response = await fetch(
-        url,
-        {
-            method: "GET",
-
-            headers: {
-                "Accept": "application/json"
-            },
-
-            cache: "no-store"
-        }
+    console.log(
+        "API GET:",
+        url
     );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "GET",
+
+                headers: {
+                    "Accept":
+                        "application/json"
+                },
+
+                cache: "no-store"
+            }
+        );
 
 
     if (!response.ok) {
@@ -108,30 +112,38 @@ POST
 =========================================================
 */
 
-async function apiPost(endpoint, data) {
+async function apiPost(
+    endpoint,
+    data
+) {
 
-    const url = buildApiUrl(endpoint);
+    const url =
+        buildApiUrl(endpoint);
 
-    console.log("API POST:", url);
-
-
-    const response = await fetch(
-        url,
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json",
-
-                "Accept":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(data)
-        }
+    console.log(
+        "API POST:",
+        url
     );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(data)
+            }
+        );
 
 
     const responseText =
@@ -154,7 +166,9 @@ async function apiPost(endpoint, data) {
     }
 
 
-    return JSON.parse(responseText);
+    return JSON.parse(
+        responseText
+    );
 
 }
 
@@ -165,30 +179,38 @@ PUT
 =========================================================
 */
 
-async function apiPut(endpoint, data) {
+async function apiPut(
+    endpoint,
+    data
+) {
 
-    const url = buildApiUrl(endpoint);
+    const url =
+        buildApiUrl(endpoint);
 
-    console.log("API PUT:", url);
-
-
-    const response = await fetch(
-        url,
-        {
-            method: "PUT",
-
-            headers: {
-                "Content-Type":
-                    "application/json",
-
-                "Accept":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(data)
-        }
+    console.log(
+        "API PUT:",
+        url
     );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(data)
+            }
+        );
 
 
     const responseText =
@@ -211,7 +233,9 @@ async function apiPut(endpoint, data) {
     }
 
 
-    return JSON.parse(responseText);
+    return JSON.parse(
+        responseText
+    );
 
 }
 
@@ -222,24 +246,31 @@ DELETE
 =========================================================
 */
 
-async function apiDelete(endpoint) {
+async function apiDelete(
+    endpoint
+) {
 
-    const url = buildApiUrl(endpoint);
+    const url =
+        buildApiUrl(endpoint);
 
-    console.log("API DELETE:", url);
-
-
-    const response = await fetch(
-        url,
-        {
-            method: "DELETE",
-
-            headers: {
-                "Accept":
-                    "application/json"
-            }
-        }
+    console.log(
+        "API DELETE:",
+        url
     );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "DELETE",
+
+                headers: {
+                    "Accept":
+                        "application/json"
+                }
+            }
+        );
 
 
     if (!response.ok) {

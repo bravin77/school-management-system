@@ -19,17 +19,23 @@ INITIALIZATION
 =========================================================
 */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     console.log("STUDENTS.JS LOADED");
 
     loadSubjects();
     loadStudents();
 
-    const form = document.getElementById("studentForm");
+    const form =
+        document.getElementById("studentForm");
 
     if (form) {
-        form.addEventListener("submit", saveStudent);
+
+        form.addEventListener(
+            "submit",
+            saveStudent
+        );
+
     }
 
 });
@@ -43,43 +49,57 @@ LOAD SUBJECTS
 
 async function loadSubjects() {
 
+    const select =
+        document.getElementById("studentSubjects");
+
+    if (!select) {
+
+        console.error(
+            "studentSubjects element not found."
+        );
+
+        return;
+
+    }
+
     try {
 
-        console.log("Loading subjects...");
+        select.innerHTML =
+            '<option value="">Loading subjects...</option>';
 
-        subjects = await apiGetArray(SUBJECTS_API);
+        subjects =
+            await apiGetArray(SUBJECTS_API);
 
-        const select =
-            document.getElementById("studentSubjects");
-
-        if (!select) {
-
-            console.error(
-                "studentSubjects not found in students.html"
-            );
-
-            return;
-        }
+        console.log(
+            "Subjects loaded:",
+            subjects
+        );
 
         select.innerHTML = "";
 
-        subjects.forEach(function (subject) {
+        if (subjects.length === 0) {
+
+            select.innerHTML =
+                '<option value="">No subjects available</option>';
+
+            return;
+
+        }
+
+        subjects.forEach(subject => {
 
             const option =
                 document.createElement("option");
 
-            option.value = subject.id;
+            option.value =
+                subject.id;
 
-            option.textContent = subject.name;
+            option.textContent =
+                subject.name;
 
             select.appendChild(option);
 
         });
-
-        console.log(
-            "Subjects loaded:",
-            subjects.length
-        );
 
     } catch (error) {
 
@@ -87,6 +107,9 @@ async function loadSubjects() {
             "Could not load subjects:",
             error
         );
+
+        select.innerHTML =
+            '<option value="">Failed to load subjects</option>';
 
     }
 
@@ -103,13 +126,16 @@ async function loadStudents() {
 
     try {
 
-        console.log("Loading students...");
+        console.log(
+            "Loading students..."
+        );
 
-        students = await apiGetArray(STUDENTS_API);
+        students =
+            await apiGetArray(STUDENTS_API);
 
         console.log(
             "Students loaded:",
-            students.length
+            students
         );
 
         displayStudents();
@@ -120,6 +146,23 @@ async function loadStudents() {
             "Could not load students:",
             error
         );
+
+        const tbody =
+            document.getElementById(
+                "studentsTableBody"
+            );
+
+        if (tbody) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Failed to load students.
+                    </td>
+                </tr>
+            `;
+
+        }
 
     }
 
@@ -142,10 +185,11 @@ function displayStudents() {
     if (!tbody) {
 
         console.error(
-            "studentsTableBody not found in students.html"
+            "studentsTableBody not found."
         );
 
         return;
+
     }
 
     tbody.innerHTML = "";
@@ -161,18 +205,18 @@ function displayStudents() {
         `;
 
         return;
+
     }
 
-    students.forEach(function (student) {
-
-        const subjectsText =
-            student.subject_names &&
-            student.subject_names.length
-                ? student.subject_names.join(", ")
-                : "No subjects";
+    students.forEach(student => {
 
         const row =
             document.createElement("tr");
+
+        const subjectsText =
+            Array.isArray(student.subject_names)
+                ? student.subject_names.join(", ")
+                : "No subjects";
 
         row.innerHTML = `
 
@@ -196,19 +240,39 @@ function displayStudents() {
 
                 <button
                     type="button"
-                    onclick="editStudent(${student.id})">
+                    class="btn-edit"
+                    data-id="${student.id}"
+                >
                     Edit
                 </button>
 
                 <button
                     type="button"
-                    onclick="deleteStudent(${student.id})">
+                    class="btn-delete"
+                    data-id="${student.id}"
+                >
                     Delete
                 </button>
 
             </td>
 
         `;
+
+        const editButton =
+            row.querySelector(".btn-edit");
+
+        const deleteButton =
+            row.querySelector(".btn-delete");
+
+        editButton.addEventListener(
+            "click",
+            () => editStudent(student.id)
+        );
+
+        deleteButton.addEventListener(
+            "click",
+            () => deleteStudent(student.id)
+        );
 
         tbody.appendChild(row);
 
@@ -247,28 +311,41 @@ async function saveStudent(event) {
             "studentSubjects"
         );
 
-    const selectedSubjects =
-        Array.from(
-            subjectSelect.selectedOptions
-        ).map(
-            option => Number(option.value)
-        );
 
+    /*
+    Validate
+    */
 
     if (!name) {
 
-        alert("Enter student name.");
+        alert(
+            "Enter student name."
+        );
 
         return;
+
     }
 
 
     if (!age) {
 
-        alert("Enter student age.");
+        alert(
+            "Enter student age."
+        );
 
         return;
+
     }
+
+
+    const selectedSubjects =
+        Array.from(
+            subjectSelect.selectedOptions
+        )
+        .map(
+            option =>
+                Number(option.value)
+        );
 
 
     const payload = {
@@ -284,30 +361,39 @@ async function saveStudent(event) {
 
     try {
 
-        console.log(
-            id
-                ? "Updating student..."
-                : "Saving student..."
-        );
+        let result;
 
+
+        /*
+        UPDATE
+        */
 
         if (id) {
 
-            await apiPut(
-                `${STUDENTS_API}${id}/`,
-                payload
-            );
+            result =
+                await apiPut(
+                    `${STUDENTS_API}${id}/`,
+                    payload
+                );
 
             alert(
                 "Student updated successfully."
             );
 
-        } else {
+        }
 
-            await apiPost(
-                STUDENTS_API,
-                payload
-            );
+
+        /*
+        CREATE
+        */
+
+        else {
+
+            result =
+                await apiPost(
+                    STUDENTS_API,
+                    payload
+                );
 
             alert(
                 "Student saved successfully."
@@ -316,10 +402,20 @@ async function saveStudent(event) {
         }
 
 
+        console.log(
+            "Student saved:",
+            result
+        );
+
+
         resetStudentForm();
 
-        await loadStudents();
 
+        /*
+        Reload students from API
+        */
+
+        await loadStudents();
 
     } catch (error) {
 
@@ -329,7 +425,7 @@ async function saveStudent(event) {
         );
 
         alert(
-            "Failed to save student:\n\n" +
+            "Failed to save student.\n\n" +
             error.message
         );
 
@@ -355,9 +451,12 @@ function editStudent(id) {
 
     if (!student) {
 
-        alert("Student not found.");
+        alert(
+            "Student not found."
+        );
 
         return;
+
     }
 
 
@@ -385,27 +484,22 @@ function editStudent(id) {
         );
 
 
-    if (select) {
+    const studentSubjects =
+        Array.isArray(student.subjects)
+            ? student.subjects.map(Number)
+            : [];
 
-        const studentSubjects =
-            Array.isArray(student.subjects)
-                ? student.subjects
-                : [];
 
-        Array.from(
-            select.options
-        ).forEach(
-            function (option) {
+    Array.from(
+        select.options
+    ).forEach(option => {
 
-                option.selected =
-                    studentSubjects.includes(
-                        Number(option.value)
-                    );
+        option.selected =
+            studentSubjects.includes(
+                Number(option.value)
+            );
 
-            }
-        );
-
-    }
+    });
 
 
     window.scrollTo({
@@ -424,13 +518,29 @@ DELETE STUDENT
 
 async function deleteStudent(id) {
 
-    const confirmed =
-        confirm(
-            "Delete this student?"
+    const student =
+        students.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
         );
 
+    const studentName =
+        student
+            ? student.name
+            : "this student";
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to delete ${studentName}?`
+        );
+
+
     if (!confirmed) {
+
         return;
+
     }
 
 
@@ -446,10 +556,7 @@ async function deleteStudent(id) {
         );
 
 
-        resetStudentForm();
-
         await loadStudents();
-
 
     } catch (error) {
 
@@ -459,7 +566,7 @@ async function deleteStudent(id) {
         );
 
         alert(
-            "Failed to delete student:\n\n" +
+            "Failed to delete student.\n\n" +
             error.message
         );
 
@@ -482,7 +589,9 @@ function resetStudentForm() {
         );
 
     if (form) {
+
         form.reset();
+
     }
 
 
@@ -492,7 +601,9 @@ function resetStudentForm() {
         );
 
     if (idInput) {
+
         idInput.value = "";
+
     }
 
 }

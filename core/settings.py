@@ -72,11 +72,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 
     "django.middleware.security.SecurityMiddleware",
-
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "corsheaders.middleware.CorsMiddleware",
-
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
 
     "django.middleware.common.CommonMiddleware",
@@ -283,9 +280,11 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
 ]
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://school-management-system-[a-z0-9-]+-develop-a148\.vercel\.app$",
+]
+
 print("CORS ALLOWED ORIGINS:", CORS_ALLOWED_ORIGINS)
 
 # ============================================================
@@ -311,7 +310,10 @@ if VERCEL_FRONTEND_URL:
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
+]
+
+CSRF_TRUSTED_ORIGINS += [
+    "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
 ]
 
 

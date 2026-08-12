@@ -361,14 +361,8 @@ if DATABASE_URL:
         "DATABASE: PostgreSQL via DATABASE_URL"
     )
 
-else:
-
-    print(
-        "DATABASE: Local SQLite db.sqlite3"
-    )
 
 
-print(
-    "CORS ALLOWED ORIGINS:",
-    CORS_ALLOWED_ORIGINS
-)
+    
+
+

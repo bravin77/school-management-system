@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+
 import dj_database_url
 
 
@@ -19,22 +20,27 @@ SECRET_KEY = os.environ.get(
     "django-insecure-local-development-key-change-in-production"
 )
 
-DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
+DEBUG = os.environ.get(
+    "DEBUG",
+    "True"
+).lower() == "true"
 
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    ".onrender.com",
+    "school-management-backend-igpt.onrender.com",
 ]
 
 
+# Optional Render hostname
 RENDER_EXTERNAL_HOSTNAME = os.environ.get(
     "RENDER_EXTERNAL_HOSTNAME"
 )
 
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # ============================================================
@@ -65,9 +71,9 @@ MIDDLEWARE = [
 
     "django.middleware.security.SecurityMiddleware",
 
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "corsheaders.middleware.CorsMiddleware",
+
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
 
@@ -119,6 +125,7 @@ TEMPLATES = [
         },
 
     },
+
 ]
 
 
@@ -132,28 +139,40 @@ WSGI_APPLICATION = "core.wsgi.application"
 # ============================================================
 # DATABASE
 # ============================================================
-#
-# LOCAL COMPUTER:
-#   Uses db.sqlite3 when DATABASE_URL does not exist.
-#
-# RENDER:
-#   Uses PostgreSQL when DATABASE_URL exists.
-#
-# ============================================================
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 if DATABASE_URL:
 
+    # --------------------------------------------------------
+    # PRODUCTION
+    # Render provides DATABASE_URL
+    # --------------------------------------------------------
+
     DATABASES = {
+
         "default": dj_database_url.parse(
+
             DATABASE_URL,
+
             conn_max_age=600,
+
+            ssl_require=True,
+
         )
+
     }
 
+    print("DATABASE: Production DATABASE_URL")
+
+
 else:
+
+    # --------------------------------------------------------
+    # LOCAL DEVELOPMENT
+    # Use SQLite when DATABASE_URL is not available
+    # --------------------------------------------------------
 
     DATABASES = {
 
@@ -168,6 +187,8 @@ else:
         }
 
     }
+
+    print("DATABASE: Local SQLite db.sqlite3")
 
 
 # ============================================================
@@ -274,15 +295,18 @@ CORS_ALLOWED_ORIGINS = [
 
     "http://127.0.0.1:3000",
 
+    # Current Vercel deployment
     "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
 
+    # Previous Vercel deployment
     "https://school-management-system-e8uewvses-develop-a148.vercel.app",
 
 ]
 
 
-# Allow Vercel preview/deployment URLs that follow your project
-# naming pattern.
+# ------------------------------------------------------------
+# Vercel preview deployment support
+# ------------------------------------------------------------
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
 
@@ -291,7 +315,9 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 ]
 
 
-# Optional environment variable for your current Vercel URL.
+# ------------------------------------------------------------
+# Optional Vercel frontend URL from Render environment
+# ------------------------------------------------------------
 
 VERCEL_FRONTEND_URL = os.environ.get(
     "VERCEL_FRONTEND_URL"
@@ -304,6 +330,12 @@ if VERCEL_FRONTEND_URL:
         CORS_ALLOWED_ORIGINS.append(
             VERCEL_FRONTEND_URL
         )
+
+
+print(
+    "CORS ALLOWED ORIGINS:",
+    CORS_ALLOWED_ORIGINS
+)
 
 
 # ============================================================
@@ -322,6 +354,23 @@ CSRF_TRUSTED_ORIGINS = [
 
 ]
 
+
+# ------------------------------------------------------------
+# Support Vercel preview deployments
+# ------------------------------------------------------------
+
+CSRF_TRUSTED_ORIGINS += [
+
+    "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
+
+    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
+
+]
+
+
+# ------------------------------------------------------------
+# Optional Vercel frontend URL
+# ------------------------------------------------------------
 
 if VERCEL_FRONTEND_URL:
 
@@ -349,20 +398,3 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
 
     CSRF_COOKIE_SECURE = True
-
-
-# ============================================================
-# DATABASE DEBUG INFORMATION
-# ============================================================
-
-if DATABASE_URL:
-
-    print(
-        "DATABASE: PostgreSQL via DATABASE_URL"
-    )
-
-
-
-    
-
-

@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-
 import dj_database_url
 
 
@@ -20,28 +19,22 @@ SECRET_KEY = os.environ.get(
     "django-insecure-local-development-key-change-in-production"
 )
 
-
-DEBUG = os.environ.get(
-    "DEBUG",
-    "True"
-).lower() == "true"
+DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    ".onrender.com",
 ]
 
 
-# Render hostname is added through an environment variable.
 RENDER_EXTERNAL_HOSTNAME = os.environ.get(
     "RENDER_EXTERNAL_HOSTNAME"
 )
 
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(
-        RENDER_EXTERNAL_HOSTNAME
-    )
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # ============================================================
@@ -57,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    
     "rest_framework",
     "corsheaders",
 
@@ -72,8 +64,11 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
 
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+
     "whitenoise.middleware.WhiteNoiseMiddleware",
+
+    "corsheaders.middleware.CorsMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
 
     "django.middleware.common.CommonMiddleware",
@@ -124,7 +119,6 @@ TEMPLATES = [
         },
 
     },
-
 ]
 
 
@@ -138,30 +132,42 @@ WSGI_APPLICATION = "core.wsgi.application"
 # ============================================================
 # DATABASE
 # ============================================================
+#
+# LOCAL COMPUTER:
+#   Uses db.sqlite3 when DATABASE_URL does not exist.
+#
+# RENDER:
+#   Uses PostgreSQL when DATABASE_URL exists.
+#
+# ============================================================
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 if DATABASE_URL:
 
     DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+        )
     }
-}
 
 else:
 
     DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        ssl_require=True,
-    )
-}
+
+        "default": {
+
+            "ENGINE":
+                "django.db.backends.sqlite3",
+
+            "NAME":
+                BASE_DIR / "db.sqlite3",
+
+        }
+
+    }
 
 
 # ============================================================
@@ -214,11 +220,6 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-
-# The frontend is now hosted separately by Vercel.
-# Therefore Django no longer needs to treat frontend/
-# as its static directory.
-
 STATICFILES_DIRS = []
 
 
@@ -268,29 +269,41 @@ REST_FRAMEWORK = {
 # ============================================================
 
 CORS_ALLOWED_ORIGINS = [
+
     "http://localhost:3000",
+
     "http://127.0.0.1:3000",
+
+    "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
+
+    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
+
 ]
+
+
+# Allow Vercel preview/deployment URLs that follow your project
+# naming pattern.
+
 CORS_ALLOWED_ORIGIN_REGEXES = [
+
     r"^https://school-management-system-[a-z0-9-]+-develop-a148\.vercel\.app$",
+
 ]
 
-print("CORS ALLOWED ORIGINS:", CORS_ALLOWED_ORIGINS)
 
-# ============================================================
-# VERCEL FRONTEND
-# ============================================================
+# Optional environment variable for your current Vercel URL.
 
 VERCEL_FRONTEND_URL = os.environ.get(
     "VERCEL_FRONTEND_URL"
 )
 
-
 if VERCEL_FRONTEND_URL:
 
-    CORS_ALLOWED_ORIGINS.append(
-        VERCEL_FRONTEND_URL
-    )
+    if VERCEL_FRONTEND_URL not in CORS_ALLOWED_ORIGINS:
+
+        CORS_ALLOWED_ORIGINS.append(
+            VERCEL_FRONTEND_URL
+        )
 
 
 # ============================================================
@@ -298,20 +311,25 @@ if VERCEL_FRONTEND_URL:
 # ============================================================
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
 
-CSRF_TRUSTED_ORIGINS += [
+    "http://localhost:3000",
+
+    "http://127.0.0.1:3000",
+
     "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
+
+    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
+
 ]
 
 
 if VERCEL_FRONTEND_URL:
 
-    CSRF_TRUSTED_ORIGINS.append(
-        VERCEL_FRONTEND_URL
-    )
+    if VERCEL_FRONTEND_URL not in CSRF_TRUSTED_ORIGINS:
+
+        CSRF_TRUSTED_ORIGINS.append(
+            VERCEL_FRONTEND_URL
+        )
 
 
 # ============================================================
@@ -321,10 +339,36 @@ if VERCEL_FRONTEND_URL:
 if not DEBUG:
 
     SECURE_PROXY_SSL_HEADER = (
+
         "HTTP_X_FORWARDED_PROTO",
+
         "https",
+
     )
 
     SESSION_COOKIE_SECURE = True
 
     CSRF_COOKIE_SECURE = True
+
+
+# ============================================================
+# DATABASE DEBUG INFORMATION
+# ============================================================
+
+if DATABASE_URL:
+
+    print(
+        "DATABASE: PostgreSQL via DATABASE_URL"
+    )
+
+else:
+
+    print(
+        "DATABASE: Local SQLite db.sqlite3"
+    )
+
+
+print(
+    "CORS ALLOWED ORIGINS:",
+    CORS_ALLOWED_ORIGINS
+)

@@ -2,12 +2,22 @@
 
 /*
 =========================================================
-DASHBOARD MANAGEMENT
+DASHBOARD MODULE
+=========================================================
+*/
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadDashboard();
+});
+
+
+/*
+=========================================================
+API URLS
 =========================================================
 */
 
 const API_URLS = {
-
     students:
         "https://school-management-backend-igpt.onrender.com/api/students/",
 
@@ -22,80 +32,55 @@ const API_URLS = {
 
     attendance:
         "https://school-management-backend-igpt.onrender.com/api/attendance/"
-
 };
 
 
 /*
 =========================================================
-INITIALIZATION
-=========================================================
-*/
-
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-
-        console.log(
-            "DASHBOARD.JS LOADED"
-        );
-
-        loadDashboard();
-
-    }
-);
-
-
-/*
-=========================================================
-API REQUEST
+API HELPER
 =========================================================
 */
 
 async function getDashboardData(url) {
 
-    const response =
-        await fetch(
-            url,
-            {
-                method: "GET",
+    console.log("Dashboard API GET:", url);
 
-                headers: {
-                    "Accept":
-                        "application/json"
-                },
+    const response = await fetch(url, {
+        method: "GET",
 
-                cache: "no-store"
-            }
-        );
+        headers: {
+            "Accept": "application/json"
+        },
+
+        cache: "no-store"
+    });
 
 
     if (!response.ok) {
 
-        throw new Error(
-            `Request failed: HTTP ${response.status}`
-        );
+        const errorText =
+            await response.text();
 
+        throw new Error(
+            `Request failed: ${response.status} ${errorText}`
+        );
     }
 
 
     return await response.json();
-
 }
 
 
 /*
 =========================================================
-HANDLE DRF RESPONSE
+HANDLE API RESPONSE
 =========================================================
 */
 
 function extractResults(data) {
 
     if (Array.isArray(data)) {
-
         return data;
-
     }
 
 
@@ -103,14 +88,11 @@ function extractResults(data) {
         data &&
         Array.isArray(data.results)
     ) {
-
         return data.results;
-
     }
 
 
     return [];
-
 }
 
 
@@ -120,10 +102,7 @@ UPDATE COUNTER
 =========================================================
 */
 
-function updateCounter(
-    ids,
-    value
-) {
+function updateCounter(ids, value) {
 
     for (const id of ids) {
 
@@ -132,15 +111,11 @@ function updateCounter(
 
         if (element) {
 
-            element.textContent =
-                value;
+            element.textContent = value;
 
             return;
-
         }
-
     }
-
 }
 
 
@@ -154,41 +129,35 @@ async function loadDashboard() {
 
     try {
 
-        console.log(
-            "Loading dashboard data..."
-        );
-
-
         const [
             studentsResponse,
             teachersResponse,
             subjectsResponse,
             marksResponse,
             attendanceResponse
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
 
-                getDashboardData(
-                    API_URLS.students
-                ),
+            getDashboardData(
+                API_URLS.students
+            ),
 
-                getDashboardData(
-                    API_URLS.teachers
-                ),
+            getDashboardData(
+                API_URLS.teachers
+            ),
 
-                getDashboardData(
-                    API_URLS.subjects
-                ),
+            getDashboardData(
+                API_URLS.subjects
+            ),
 
-                getDashboardData(
-                    API_URLS.marks
-                ),
+            getDashboardData(
+                API_URLS.marks
+            ),
 
-                getDashboardData(
-                    API_URLS.attendance
-                )
+            getDashboardData(
+                API_URLS.attendance
+            )
 
-            ]);
+        ]);
 
 
         const students =
@@ -196,20 +165,24 @@ async function loadDashboard() {
                 studentsResponse
             );
 
+
         const teachers =
             extractResults(
                 teachersResponse
             );
+
 
         const subjects =
             extractResults(
                 subjectsResponse
             );
 
+
         const marks =
             extractResults(
                 marksResponse
             );
+
 
         const attendance =
             extractResults(
@@ -219,7 +192,7 @@ async function loadDashboard() {
 
         /*
         =================================================
-        COUNTERS
+        UPDATE MAIN COUNTERS
         =================================================
         */
 
@@ -273,7 +246,7 @@ async function loadDashboard() {
 
         /*
         =================================================
-        DASHBOARD TABLES
+        DASHBOARD SECTIONS
         =================================================
         */
 
@@ -281,64 +254,67 @@ async function loadDashboard() {
             attendance
         );
 
+
         displayAverageMarks(
             marks
         );
+
 
         displayRecentStudents(
             students
         );
 
+
         displayRecentAttendance(
             attendance
         );
+
 
         displayRecentMarks(
             marks
         );
 
 
-        const loading =
-            document.getElementById(
-                "dashboardLoading"
-            );
-
-        if (loading) {
-
-            loading.style.display =
-                "none";
-
-        }
-
+        /*
+        =================================================
+        CONSOLE CONFIRMATION
+        =================================================
+        */
 
         console.log(
             "Dashboard loaded successfully."
         );
+
 
         console.log(
             "Students:",
             students.length
         );
 
+
         console.log(
             "Teachers:",
             teachers.length
         );
+
 
         console.log(
             "Subjects:",
             subjects.length
         );
 
+
         console.log(
             "Marks:",
             marks.length
         );
 
+
         console.log(
             "Attendance:",
             attendance.length
         );
+
 
     } catch (error) {
 
@@ -349,11 +325,9 @@ async function loadDashboard() {
 
 
         showDashboardError(
-            "Unable to load dashboard data. Check the browser console."
+            "Unable to load dashboard data. Please refresh the page."
         );
-
     }
-
 }
 
 
@@ -363,50 +337,37 @@ ATTENDANCE STATUS
 =========================================================
 */
 
-function displayAttendanceStatus(
-    attendance
-) {
+function displayAttendanceStatus(attendance) {
 
     let present = 0;
-
     let absent = 0;
-
     let late = 0;
 
 
-    attendance.forEach(
-        record => {
+    attendance.forEach(record => {
 
-            const status =
-                String(
-                    record.status || ""
-                )
+        const status =
+            String(
+                record.status || ""
+            )
                 .trim()
                 .toLowerCase();
 
 
-            if (
-                status === "present"
-            ) {
+        if (status === "present") {
 
-                present++;
+            present++;
 
-            } else if (
-                status === "absent"
-            ) {
+        } else if (status === "absent") {
 
-                absent++;
+            absent++;
 
-            } else if (
-                status === "late"
-            ) {
+        } else if (status === "late") {
 
-                late++;
-
-            }
-
+            late++;
         }
-    );
+
+    });
 
 
     updateCounter(
@@ -434,7 +395,6 @@ function displayAttendanceStatus(
         ],
         late
     );
-
 }
 
 
@@ -444,9 +404,72 @@ AVERAGE MARKS
 =========================================================
 */
 
-function displayAverageMarks(
-    marks
-) {
+function displayAverageMarks(marks) {
+
+    const subjectGroups = {};
+
+
+    marks.forEach(mark => {
+
+        const subjectId =
+            mark.subject;
+
+
+        const subjectName =
+            mark.subject_name ||
+            "Unknown Subject";
+
+
+        const score =
+            Number(mark.score);
+
+
+        if (!Number.isNaN(score)) {
+
+            if (!subjectGroups[subjectId]) {
+
+                subjectGroups[subjectId] = {
+
+                    name: subjectName,
+
+                    total: 0,
+
+                    count: 0
+                };
+            }
+
+
+            subjectGroups[
+                subjectId
+            ].total += score;
+
+
+            subjectGroups[
+                subjectId
+            ].count++;
+        }
+
+    });
+
+
+    const averages =
+        Object.values(
+            subjectGroups
+        )
+        .map(subject => {
+
+            return {
+
+                name:
+                    subject.name,
+
+                average:
+                    subject.total /
+                    subject.count
+            };
+
+        });
+
 
     const tableBody =
         document.getElementById(
@@ -455,84 +478,12 @@ function displayAverageMarks(
 
 
     if (!tableBody) {
+
         return;
     }
 
 
     tableBody.innerHTML = "";
-
-
-    if (marks.length === 0) {
-
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="2">
-                    No marks available.
-                </td>
-            </tr>
-        `;
-
-        return;
-    }
-
-
-    const groups = {};
-
-
-    marks.forEach(
-        mark => {
-
-            const subjectId =
-                mark.subject;
-
-            const subjectName =
-                mark.subject_name ||
-                "Unknown Subject";
-
-            const score =
-                Number(mark.score);
-
-
-            if (
-                Number.isNaN(score)
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                !groups[subjectId]
-            ) {
-
-                groups[subjectId] = {
-
-                    name:
-                        subjectName,
-
-                    total:
-                        0,
-
-                    count:
-                        0
-
-                };
-
-            }
-
-
-            groups[subjectId].total +=
-                score;
-
-            groups[subjectId].count++;
-
-        }
-    );
-
-
-    const averages =
-        Object.values(groups);
 
 
     if (averages.length === 0) {
@@ -546,46 +497,29 @@ function displayAverageMarks(
         `;
 
         return;
-
     }
 
 
-    averages.forEach(
-        subject => {
+    averages.forEach(subject => {
 
-            const row =
-                document.createElement(
-                    "tr"
-                );
+        const row =
+            document.createElement("tr");
 
 
-            const average =
-                subject.total /
-                subject.count;
+        row.innerHTML = `
+            <td>
+                ${escapeHTML(subject.name)}
+            </td>
+
+            <td>
+                ${subject.average.toFixed(2)}
+            </td>
+        `;
 
 
-            row.innerHTML = `
+        tableBody.appendChild(row);
 
-                <td>
-                    ${escapeHTML(
-                        subject.name
-                    )}
-                </td>
-
-                <td>
-                    ${average.toFixed(2)}
-                </td>
-
-            `;
-
-
-            tableBody.appendChild(
-                row
-            );
-
-        }
-    );
-
+    });
 }
 
 
@@ -595,9 +529,7 @@ RECENT STUDENTS
 =========================================================
 */
 
-function displayRecentStudents(
-    students
-) {
+function displayRecentStudents(students) {
 
     const tableBody =
         document.getElementById(
@@ -606,6 +538,7 @@ function displayRecentStudents(
 
 
     if (!tableBody) {
+
         return;
     }
 
@@ -637,57 +570,41 @@ function displayRecentStudents(
             .slice(0, 5);
 
 
-    recentStudents.forEach(
-        student => {
+    recentStudents.forEach(student => {
 
-            const row =
-                document.createElement(
-                    "tr"
-                );
+        const row =
+            document.createElement("tr");
 
 
-            const subjects =
-                Array.isArray(
-                    student.subject_names
-                )
-                    ? student.subject_names.join(
-                        ", "
-                    )
-                    : "No subjects";
+        const subjects =
+            Array.isArray(
+                student.subject_names
+            )
+                ? student.subject_names.join(", ")
+                : "No subjects";
 
 
-            row.innerHTML = `
+        row.innerHTML = `
+            <td>
+                ${escapeHTML(
+                    student.name ||
+                    "Unknown"
+                )}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        student.name ||
-                        "Unknown"
-                    )}
-                </td>
+            <td>
+                ${student.age ?? "-"}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        student.age ??
-                        "-"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        subjects
-                    )}
-                </td>
-
-            `;
+            <td>
+                ${escapeHTML(subjects)}
+            </td>
+        `;
 
 
-            tableBody.appendChild(
-                row
-            );
+        tableBody.appendChild(row);
 
-        }
-    );
-
+    });
 }
 
 
@@ -708,6 +625,7 @@ function displayRecentAttendance(
 
 
     if (!tableBody) {
+
         return;
     }
 
@@ -739,48 +657,39 @@ function displayRecentAttendance(
             .slice(0, 5);
 
 
-    recentAttendance.forEach(
-        record => {
+    recentAttendance.forEach(record => {
 
-            const row =
-                document.createElement(
-                    "tr"
-                );
+        const row =
+            document.createElement("tr");
 
 
-            row.innerHTML = `
+        row.innerHTML = `
+            <td>
+                ${escapeHTML(
+                    record.student_name ||
+                    "Unknown"
+                )}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        record.student_name ||
-                        "Unknown"
-                    )}
-                </td>
+            <td>
+                ${escapeHTML(
+                    record.date ||
+                    "-"
+                )}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        record.date ||
-                        "-"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        record.status ||
-                        "-"
-                    )}
-                </td>
-
-            `;
+            <td>
+                ${escapeHTML(
+                    record.status ||
+                    "-"
+                )}
+            </td>
+        `;
 
 
-            tableBody.appendChild(
-                row
-            );
+        tableBody.appendChild(row);
 
-        }
-    );
-
+    });
 }
 
 
@@ -790,9 +699,7 @@ RECENT MARKS
 =========================================================
 */
 
-function displayRecentMarks(
-    marks
-) {
+function displayRecentMarks(marks) {
 
     const tableBody =
         document.getElementById(
@@ -801,6 +708,7 @@ function displayRecentMarks(
 
 
     if (!tableBody) {
+
         return;
     }
 
@@ -832,60 +740,46 @@ function displayRecentMarks(
             .slice(0, 5);
 
 
-    recentMarks.forEach(
-        mark => {
+    recentMarks.forEach(mark => {
 
-            const row =
-                document.createElement(
-                    "tr"
-                );
+        const row =
+            document.createElement("tr");
 
 
-            row.innerHTML = `
+        row.innerHTML = `
+            <td>
+                ${escapeHTML(
+                    mark.student_name ||
+                    "Unknown"
+                )}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        mark.student_name ||
-                        "Unknown"
-                    )}
-                </td>
+            <td>
+                ${escapeHTML(
+                    mark.subject_name ||
+                    "Unknown"
+                )}
+            </td>
 
-                <td>
-                    ${escapeHTML(
-                        mark.subject_name ||
-                        "Unknown"
-                    )}
-                </td>
-
-                <td>
-                    ${escapeHTML(
-                        mark.score ??
-                        "-"
-                    )}
-                </td>
-
-            `;
+            <td>
+                ${mark.score ?? "-"}
+            </td>
+        `;
 
 
-            tableBody.appendChild(
-                row
-            );
+        tableBody.appendChild(row);
 
-        }
-    );
-
+    });
 }
 
 
 /*
 =========================================================
-ERROR
+ERROR MESSAGE
 =========================================================
 */
 
-function showDashboardError(
-    message
-) {
+function showDashboardError(message) {
 
     const errorElement =
         document.getElementById(
@@ -901,22 +795,11 @@ function showDashboardError(
         errorElement.style.display =
             "block";
 
+        return;
     }
 
 
-    const loading =
-        document.getElementById(
-            "dashboardLoading"
-        );
-
-
-    if (loading) {
-
-        loading.style.display =
-            "none";
-
-    }
-
+    console.error(message);
 }
 
 
@@ -929,13 +812,12 @@ ESCAPE HTML
 function escapeHTML(value) {
 
     const div =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
+
 
     div.textContent =
         value ?? "";
 
-    return div.innerHTML;
 
+    return div.innerHTML;
 }

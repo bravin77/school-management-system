@@ -1,83 +1,163 @@
-document.addEventListener("DOMContentLoaded", () => {
-    loadDashboard();
-});
+"use strict";
 
+/*
+=========================================================
+DASHBOARD MANAGEMENT
+=========================================================
+*/
 
 const API_URLS = {
-    students: "/api/students/",
-    teachers: "/api/teachers/",
-    subjects: "/api/subjects/",
-    marks: "/api/marks/",
-    attendance: "/api/attendance/"
+
+    students:
+        "https://school-management-backend-igpt.onrender.com/api/students/",
+
+    teachers:
+        "https://school-management-backend-igpt.onrender.com/api/teachers/",
+
+    subjects:
+        "https://school-management-backend-igpt.onrender.com/api/subjects/",
+
+    marks:
+        "https://school-management-backend-igpt.onrender.com/api/marks/",
+
+    attendance:
+        "https://school-management-backend-igpt.onrender.com/api/attendance/"
+
 };
 
 
-/* ================================
-   API HELPER
-================================ */
+/*
+=========================================================
+INITIALIZATION
+=========================================================
+*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        console.log(
+            "DASHBOARD.JS LOADED"
+        );
+
+        loadDashboard();
+
+    }
+);
+
+
+/*
+=========================================================
+API REQUEST
+=========================================================
+*/
 
 async function getDashboardData(url) {
 
-    const response = await fetch(url, {
-        method: "GET",
-        headers: {
-            "Accept": "application/json"
-        }
-    });
+    const response =
+        await fetch(
+            url,
+            {
+                method: "GET",
+
+                headers: {
+                    "Accept":
+                        "application/json"
+                },
+
+                cache: "no-store"
+            }
+        );
+
 
     if (!response.ok) {
+
         throw new Error(
-            `Request failed: ${response.status} ${response.statusText}`
+            `Request failed: HTTP ${response.status}`
         );
+
     }
 
+
     return await response.json();
+
 }
 
 
-/* ================================
-   HANDLE DRF RESPONSE
-================================ */
+/*
+=========================================================
+HANDLE DRF RESPONSE
+=========================================================
+*/
 
 function extractResults(data) {
 
     if (Array.isArray(data)) {
+
         return data;
+
     }
 
-    if (data && Array.isArray(data.results)) {
+
+    if (
+        data &&
+        Array.isArray(data.results)
+    ) {
+
         return data.results;
+
     }
+
 
     return [];
+
 }
 
 
-/* ================================
-   UPDATE COUNTERS
-================================ */
+/*
+=========================================================
+UPDATE COUNTER
+=========================================================
+*/
 
-function updateCounter(ids, value) {
+function updateCounter(
+    ids,
+    value
+) {
 
     for (const id of ids) {
 
-        const element = document.getElementById(id);
+        const element =
+            document.getElementById(id);
 
         if (element) {
-            element.textContent = value;
+
+            element.textContent =
+                value;
+
             return;
+
         }
+
     }
+
 }
 
 
-/* ================================
-   MAIN DASHBOARD
-================================ */
+/*
+=========================================================
+LOAD DASHBOARD
+=========================================================
+*/
 
 async function loadDashboard() {
 
     try {
+
+        console.log(
+            "Loading dashboard data..."
+        );
+
 
         const [
             studentsResponse,
@@ -85,76 +165,180 @@ async function loadDashboard() {
             subjectsResponse,
             marksResponse,
             attendanceResponse
-        ] = await Promise.all([
+        ] =
+            await Promise.all([
 
-            getDashboardData(API_URLS.students),
-            getDashboardData(API_URLS.teachers),
-            getDashboardData(API_URLS.subjects),
-            getDashboardData(API_URLS.marks),
-            getDashboardData(API_URLS.attendance)
+                getDashboardData(
+                    API_URLS.students
+                ),
 
-        ]);
+                getDashboardData(
+                    API_URLS.teachers
+                ),
+
+                getDashboardData(
+                    API_URLS.subjects
+                ),
+
+                getDashboardData(
+                    API_URLS.marks
+                ),
+
+                getDashboardData(
+                    API_URLS.attendance
+                )
+
+            ]);
 
 
-        const students = extractResults(studentsResponse);
-        const teachers = extractResults(teachersResponse);
-        const subjects = extractResults(subjectsResponse);
-        const marks = extractResults(marksResponse);
-        const attendance = extractResults(attendanceResponse);
+        const students =
+            extractResults(
+                studentsResponse
+            );
+
+        const teachers =
+            extractResults(
+                teachersResponse
+            );
+
+        const subjects =
+            extractResults(
+                subjectsResponse
+            );
+
+        const marks =
+            extractResults(
+                marksResponse
+            );
+
+        const attendance =
+            extractResults(
+                attendanceResponse
+            );
 
 
-        /* ================================
-           MAIN COUNTERS
-        ================================= */
+        /*
+        =================================================
+        COUNTERS
+        =================================================
+        */
 
         updateCounter(
-            ["studentCount", "studentsCount", "totalStudents"],
+            [
+                "studentCount",
+                "studentsCount",
+                "totalStudents"
+            ],
             students.length
         );
 
+
         updateCounter(
-            ["teacherCount", "teachersCount", "totalTeachers"],
+            [
+                "teacherCount",
+                "teachersCount",
+                "totalTeachers"
+            ],
             teachers.length
         );
 
+
         updateCounter(
-            ["subjectCount", "subjectsCount", "totalSubjects"],
+            [
+                "subjectCount",
+                "subjectsCount",
+                "totalSubjects"
+            ],
             subjects.length
         );
 
+
         updateCounter(
-            ["marksCount", "totalMarks"],
+            [
+                "marksCount",
+                "totalMarks"
+            ],
             marks.length
         );
 
+
         updateCounter(
-            ["attendanceCount", "totalAttendance"],
+            [
+                "attendanceCount",
+                "totalAttendance"
+            ],
             attendance.length
         );
 
 
-        /* ================================
-           DASHBOARD SECTIONS
-        ================================= */
+        /*
+        =================================================
+        DASHBOARD TABLES
+        =================================================
+        */
 
-        displayAttendanceStatus(attendance);
+        displayAttendanceStatus(
+            attendance
+        );
 
-        displayAverageMarks(marks);
+        displayAverageMarks(
+            marks
+        );
 
-        displayRecentStudents(students);
+        displayRecentStudents(
+            students
+        );
 
-        displayRecentAttendance(attendance);
-        displayRecentMarks(marks);
+        displayRecentAttendance(
+            attendance
+        );
+
+        displayRecentMarks(
+            marks
+        );
 
 
-        console.log("Dashboard loaded successfully.");
+        const loading =
+            document.getElementById(
+                "dashboardLoading"
+            );
 
-        console.log("Students:", students.length);
-        console.log("Teachers:", teachers.length);
-        console.log("Subjects:", subjects.length);
-        console.log("Marks:", marks.length);
-        console.log("Attendance:", attendance.length);
+        if (loading) {
 
+            loading.style.display =
+                "none";
+
+        }
+
+
+        console.log(
+            "Dashboard loaded successfully."
+        );
+
+        console.log(
+            "Students:",
+            students.length
+        );
+
+        console.log(
+            "Teachers:",
+            teachers.length
+        );
+
+        console.log(
+            "Subjects:",
+            subjects.length
+        );
+
+        console.log(
+            "Marks:",
+            marks.length
+        );
+
+        console.log(
+            "Attendance:",
+            attendance.length
+        );
 
     } catch (error) {
 
@@ -163,170 +347,114 @@ async function loadDashboard() {
             error
         );
 
+
         showDashboardError(
-            "Unable to load dashboard data. Please refresh the page."
+            "Unable to load dashboard data. Check the browser console."
         );
+
     }
+
 }
 
 
-/* =========================================================
-   1. ATTENDANCE STATUS
-========================================================= */
+/*
+=========================================================
+ATTENDANCE STATUS
+=========================================================
+*/
 
-function displayAttendanceStatus(attendance) {
+function displayAttendanceStatus(
+    attendance
+) {
 
     let present = 0;
+
     let absent = 0;
+
     let late = 0;
 
 
-    attendance.forEach(record => {
+    attendance.forEach(
+        record => {
 
-        const status =
-            String(record.status || "")
+            const status =
+                String(
+                    record.status || ""
+                )
                 .trim()
                 .toLowerCase();
 
 
-        if (status === "present") {
+            if (
+                status === "present"
+            ) {
 
-            present++;
+                present++;
 
-        } else if (status === "absent") {
+            } else if (
+                status === "absent"
+            ) {
 
-            absent++;
+                absent++;
 
-        } else if (status === "late") {
+            } else if (
+                status === "late"
+            ) {
 
-            late++;
+                late++;
+
+            }
+
         }
-    });
+    );
 
 
     updateCounter(
-        ["presentCount", "attendancePresent"],
+        [
+            "presentCount",
+            "attendancePresent"
+        ],
         present
     );
 
+
     updateCounter(
-        ["absentCount", "attendanceAbsent"],
+        [
+            "absentCount",
+            "attendanceAbsent"
+        ],
         absent
     );
 
+
     updateCounter(
-        ["lateCount", "attendanceLate"],
+        [
+            "lateCount",
+            "attendanceLate"
+        ],
         late
     );
 
-
-    /*
-     * Optional percentage calculations.
-     */
-
-    const total = present + absent + late;
-
-
-    if (total > 0) {
-
-        const presentPercentage =
-            ((present / total) * 100).toFixed(1);
-
-        const absentPercentage =
-            ((absent / total) * 100).toFixed(1);
-
-        const latePercentage =
-            ((late / total) * 100).toFixed(1);
-
-
-        updateCounter(
-            ["presentPercentage"],
-            `${presentPercentage}%`
-        );
-
-        updateCounter(
-            ["absentPercentage"],
-            `${absentPercentage}%`
-        );
-
-        updateCounter(
-            ["latePercentage"],
-            `${latePercentage}%`
-        );
-    }
 }
 
 
-/* =========================================================
-   2. AVERAGE MARKS PER SUBJECT
-========================================================= */
+/*
+=========================================================
+AVERAGE MARKS
+=========================================================
+*/
 
-function displayAverageMarks(marks) {
-
-    /*
-     * Group marks by subject.
-     */
-
-    const subjectGroups = {};
-
-
-    marks.forEach(mark => {
-
-        const subjectId = mark.subject;
-
-        const subjectName =
-            mark.subject_name || "Unknown Subject";
-
-        const score = Number(mark.score);
-
-
-        if (!Number.isNaN(score)) {
-
-            if (!subjectGroups[subjectId]) {
-
-                subjectGroups[subjectId] = {
-                    name: subjectName,
-                    total: 0,
-                    count: 0
-                };
-            }
-
-
-            subjectGroups[subjectId].total += score;
-
-            subjectGroups[subjectId].count++;
-        }
-    });
-
-
-    const averages = Object.values(subjectGroups)
-        .map(subject => {
-
-            return {
-                name: subject.name,
-
-                average:
-                    subject.total / subject.count
-            };
-        });
-
-
-    /*
-     * Find dashboard table.
-     */
+function displayAverageMarks(
+    marks
+) {
 
     const tableBody =
-        document.getElementById("averageMarksBody") ||
-        document.getElementById("averageMarksTableBody") ||
-        document.getElementById("marksAverageBody");
+        document.getElementById(
+            "averageMarksBody"
+        );
 
 
     if (!tableBody) {
-
-        console.warn(
-            "Average marks table body not found."
-        );
-
         return;
     }
 
@@ -334,7 +462,7 @@ function displayAverageMarks(marks) {
     tableBody.innerHTML = "";
 
 
-    if (averages.length === 0) {
+    if (marks.length === 0) {
 
         tableBody.innerHTML = `
             <tr>
@@ -348,46 +476,136 @@ function displayAverageMarks(marks) {
     }
 
 
-    averages.forEach(subject => {
-
-        const row =
-            document.createElement("tr");
+    const groups = {};
 
 
-        row.innerHTML = `
-            <td>
-                ${escapeHTML(subject.name)}
-            </td>
+    marks.forEach(
+        mark => {
 
-            <td>
-                ${subject.average.toFixed(2)}
-            </td>
+            const subjectId =
+                mark.subject;
+
+            const subjectName =
+                mark.subject_name ||
+                "Unknown Subject";
+
+            const score =
+                Number(mark.score);
+
+
+            if (
+                Number.isNaN(score)
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                !groups[subjectId]
+            ) {
+
+                groups[subjectId] = {
+
+                    name:
+                        subjectName,
+
+                    total:
+                        0,
+
+                    count:
+                        0
+
+                };
+
+            }
+
+
+            groups[subjectId].total +=
+                score;
+
+            groups[subjectId].count++;
+
+        }
+    );
+
+
+    const averages =
+        Object.values(groups);
+
+
+    if (averages.length === 0) {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="2">
+                    No marks available.
+                </td>
+            </tr>
         `;
 
+        return;
 
-        tableBody.appendChild(row);
-    });
+    }
+
+
+    averages.forEach(
+        subject => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const average =
+                subject.total /
+                subject.count;
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(
+                        subject.name
+                    )}
+                </td>
+
+                <td>
+                    ${average.toFixed(2)}
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
 
-/* =========================================================
-   3. RECENT STUDENTS
-========================================================= */
+/*
+=========================================================
+RECENT STUDENTS
+=========================================================
+*/
 
-function displayRecentStudents(students) {
+function displayRecentStudents(
+    students
+) {
 
     const tableBody =
-        document.getElementById("recentStudentsBody") ||
-        document.getElementById("studentsTableBody") ||
-        document.getElementById("recentStudentsTableBody");
+        document.getElementById(
+            "recentStudentsBody"
+        );
 
 
     if (!tableBody) {
-
-        console.warn(
-            "Recent students table body not found."
-        );
-
         return;
     }
 
@@ -409,71 +627,87 @@ function displayRecentStudents(students) {
     }
 
 
-    /*
-     * Display the newest five students.
-     *
-     * Your current API returns students in ID order,
-     * therefore the highest IDs are treated as newest.
-     */
-
     const recentStudents =
         [...students]
-            .sort((a, b) => Number(b.id) - Number(a.id))
+            .sort(
+                (a, b) =>
+                    Number(b.id) -
+                    Number(a.id)
+            )
             .slice(0, 5);
 
 
-    recentStudents.forEach(student => {
+    recentStudents.forEach(
+        student => {
 
-        const row =
-            document.createElement("tr");
-
-
-        const subjects =
-            Array.isArray(student.subject_names)
-                ? student.subject_names.join(", ")
-                : "No subjects";
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
 
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(student.name || "Unknown")}
-            </td>
-
-            <td>
-                ${student.age ?? "-"}
-            </td>
-
-            <td>
-                ${escapeHTML(subjects)}
-            </td>
-
-        `;
+            const subjects =
+                Array.isArray(
+                    student.subject_names
+                )
+                    ? student.subject_names.join(
+                        ", "
+                    )
+                    : "No subjects";
 
 
-        tableBody.appendChild(row);
-    });
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(
+                        student.name ||
+                        "Unknown"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        student.age ??
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        subjects
+                    )}
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
 
-/* =========================================================
-   4. RECENT ATTENDANCE
-========================================================= */
+/*
+=========================================================
+RECENT ATTENDANCE
+=========================================================
+*/
 
-function displayRecentAttendance(attendance) {
+function displayRecentAttendance(
+    attendance
+) {
 
     const tableBody =
-        document.getElementById("recentAttendanceBody") ||
-        document.getElementById("attendanceTableBody") ||
-        document.getElementById("recentAttendanceTableBody");
+        document.getElementById(
+            "recentAttendanceBody"
+        );
 
 
     if (!tableBody) {
-
-        console.warn(
-            "Recent attendance table body not found."
-        );
-
         return;
     }
 
@@ -495,64 +729,75 @@ function displayRecentAttendance(attendance) {
     }
 
 
-    /*
-     * Sort by date.
-     */
-
     const recentAttendance =
         [...attendance]
-            .sort((a, b) => {
-
-                return new Date(b.date) -
-                       new Date(a.date);
-
-            })
+            .sort(
+                (a, b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            )
             .slice(0, 5);
 
 
-    recentAttendance.forEach(record => {
+    recentAttendance.forEach(
+        record => {
 
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(
-                    record.student_name || "Unknown"
-                )}
-            </td>
-
-            <td>
-                ${escapeHTML(
-                    record.date || "-"
-                )}
-            </td>
-
-            <td>
-                ${escapeHTML(
-                    record.status || "-"
-                )}
-            </td>
-
-        `;
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
 
-        tableBody.appendChild(row);
-    });
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(
+                        record.student_name ||
+                        "Unknown"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        record.date ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        record.status ||
+                        "-"
+                    )}
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
 
-/* =========================================================
-   OPTIONAL RECENT MARKS
-========================================================= */
+/*
+=========================================================
+RECENT MARKS
+=========================================================
+*/
 
-function displayRecentMarks(marks) {
+function displayRecentMarks(
+    marks
+) {
 
     const tableBody =
-        document.getElementById("recentMarksBody") ||
-        document.getElementById("marksTableBody");
+        document.getElementById(
+            "recentMarksBody"
+        );
 
 
     if (!tableBody) {
@@ -579,76 +824,118 @@ function displayRecentMarks(marks) {
 
     const recentMarks =
         [...marks]
-            .sort((a, b) => Number(b.id) - Number(a.id))
+            .sort(
+                (a, b) =>
+                    Number(b.id) -
+                    Number(a.id)
+            )
             .slice(0, 5);
 
 
-    recentMarks.forEach(mark => {
+    recentMarks.forEach(
+        mark => {
 
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(
-                    mark.student_name || "Unknown"
-                )}
-            </td>
-
-            <td>
-                ${escapeHTML(
-                    mark.subject_name || "Unknown"
-                )}
-            </td>
-
-            <td>
-                ${mark.score ?? "-"}
-            </td>
-
-        `;
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
 
-        tableBody.appendChild(row);
-    });
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(
+                        mark.student_name ||
+                        "Unknown"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        mark.subject_name ||
+                        "Unknown"
+                    )}
+                </td>
+
+                <td>
+                    ${escapeHTML(
+                        mark.score ??
+                        "-"
+                    )}
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
 
-/* =========================================================
-   ERROR MESSAGE
-========================================================= */
+/*
+=========================================================
+ERROR
+=========================================================
+*/
 
-function showDashboardError(message) {
+function showDashboardError(
+    message
+) {
 
     const errorElement =
-        document.getElementById("dashboardError");
+        document.getElementById(
+            "dashboardError"
+        );
 
 
     if (errorElement) {
 
-        errorElement.textContent = message;
+        errorElement.textContent =
+            message;
 
-        errorElement.style.display = "block";
+        errorElement.style.display =
+            "block";
 
-        return;
     }
 
 
-    console.error(message);
+    const loading =
+        document.getElementById(
+            "dashboardLoading"
+        );
+
+
+    if (loading) {
+
+        loading.style.display =
+            "none";
+
+    }
+
 }
 
 
-/* =========================================================
-   SECURITY HELPER
-========================================================= */
+/*
+=========================================================
+ESCAPE HTML
+=========================================================
+*/
 
 function escapeHTML(value) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
-    div.textContent = value;
+    div.textContent =
+        value ?? "";
 
     return div.innerHTML;
+
 }

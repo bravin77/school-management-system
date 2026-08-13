@@ -29,16 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSubjects();
     loadStudents();
 
-    const form =
-        document.getElementById("studentForm");
+    const form = document.getElementById("studentForm");
 
     if (form) {
-
-        form.addEventListener(
-            "submit",
-            saveStudent
-        );
-
+        form.addEventListener("submit", saveStudent);
     }
 
 });
@@ -62,7 +56,6 @@ async function loadSubjects() {
         );
 
         return;
-
     }
 
     try {
@@ -70,15 +63,44 @@ async function loadSubjects() {
         select.innerHTML =
             '<option value="">Loading subjects...</option>';
 
+        const response =
+            await fetch(
+                SUBJECTS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept": "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Failed to load subjects: HTTP ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
         subjects =
-            await apiGetArray(SUBJECTS_API);
+            Array.isArray(data)
+                ? data
+                : (Array.isArray(data.results)
+                    ? data.results
+                    : []);
 
         console.log(
             "Subjects loaded:",
             subjects
         );
 
-        select.innerHTML = "";
+        select.innerHTML =
+            '<option value="">Select subject(s)</option>';
 
         if (subjects.length === 0) {
 
@@ -86,7 +108,6 @@ async function loadSubjects() {
                 '<option value="">No subjects available</option>';
 
             return;
-
         }
 
         subjects.forEach(subject => {
@@ -127,6 +148,11 @@ LOAD STUDENTS
 
 async function loadStudents() {
 
+    const tbody =
+        document.getElementById(
+            "studentsTableBody"
+        );
+
     try {
 
         console.log(
@@ -134,8 +160,48 @@ async function loadStudents() {
             STUDENTS_API
         );
 
+        if (tbody) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Loading students...
+                    </td>
+                </tr>
+            `;
+
+        }
+
+        const response =
+            await fetch(
+                STUDENTS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept": "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Failed to load students: HTTP ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
         students =
-            await apiGetArray(STUDENTS_API);
+            Array.isArray(data)
+                ? data
+                : (Array.isArray(data.results)
+                    ? data.results
+                    : []);
 
         console.log(
             "Students loaded:",
@@ -150,11 +216,6 @@ async function loadStudents() {
             "Could not load students:",
             error
         );
-
-        const tbody =
-            document.getElementById(
-                "studentsTableBody"
-            );
 
         if (tbody) {
 
@@ -193,7 +254,6 @@ function displayStudents() {
         );
 
         return;
-
     }
 
     tbody.innerHTML = "";
@@ -209,7 +269,6 @@ function displayStudents() {
         `;
 
         return;
-
     }
 
     students.forEach(student => {
@@ -240,7 +299,7 @@ function displayStudents() {
                 ${escapeHTML(subjectsText)}
             </td>
 
-            <td>
+            <td class="actions">
 
                 <button
                     type="button"
@@ -326,23 +385,17 @@ async function saveStudent(event) {
 
     if (!name) {
 
-        alert(
-            "Enter student name."
-        );
+        alert("Enter student name.");
 
         return;
-
     }
 
 
     if (!age) {
 
-        alert(
-            "Enter student age."
-        );
+        alert("Enter student age.");
 
         return;
-
     }
 
 
@@ -351,8 +404,7 @@ async function saveStudent(event) {
             ? Array.from(
                 subjectSelect.selectedOptions
             ).map(
-                option =>
-                    Number(option.value)
+                option => Number(option.value)
             )
             : [];
 
@@ -368,41 +420,72 @@ async function saveStudent(event) {
     };
 
 
+    const url =
+        id
+            ? `${STUDENTS_API}${id}/`
+            : STUDENTS_API;
+
+    const method =
+        id
+            ? "PUT"
+            : "POST";
+
+
     try {
 
-        let result;
+        console.log(
+            `${method} student request:`,
+            url,
+            payload
+        );
 
+        const response =
+            await fetch(
+                url,
+                {
+                    method: method,
 
-        if (id) {
+                    headers: {
 
-            result =
-                await apiPut(
-                    `${STUDENTS_API}${id}/`,
-                    payload
-                );
+                        "Content-Type":
+                            "application/json",
 
-            alert(
-                "Student updated successfully."
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+
+                }
             );
 
-        } else {
 
-            result =
-                await apiPost(
-                    STUDENTS_API,
-                    payload
-                );
+        const text =
+            await response.text();
 
-            alert(
-                "Student saved successfully."
+
+        console.log(
+            "Student save response:",
+            text
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                `HTTP ${response.status}`
             );
 
         }
 
 
-        console.log(
-            "Student saved:",
-            result
+        alert(
+            id
+                ? "Student updated successfully."
+                : "Student saved successfully."
         );
 
 
@@ -444,12 +527,9 @@ function editStudent(id) {
 
     if (!student) {
 
-        alert(
-            "Student not found."
-        );
+        alert("Student not found.");
 
         return;
-
     }
 
 
@@ -535,17 +615,37 @@ async function deleteStudent(id) {
 
 
     if (!confirmed) {
-
         return;
-
     }
 
 
     try {
 
-        await apiDelete(
-            `${STUDENTS_API}${id}/`
-        );
+        const response =
+            await fetch(
+                `${STUDENTS_API}${id}/`,
+                {
+                    method: "DELETE",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (!response.ok) {
+
+            const text =
+                await response.text();
+
+            throw new Error(
+                text ||
+                `HTTP ${response.status}`
+            );
+
+        }
 
 
         alert(
@@ -586,9 +686,7 @@ function resetStudentForm() {
         );
 
     if (form) {
-
         form.reset();
-
     }
 
 
@@ -598,9 +696,7 @@ function resetStudentForm() {
         );
 
     if (idInput) {
-
         idInput.value = "";
-
     }
 
 }

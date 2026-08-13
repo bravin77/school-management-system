@@ -4,128 +4,232 @@
 =========================================================
 TEACHER MANAGEMENT MODULE
 =========================================================
-
-This module communicates directly with the Django REST API.
-
-API:
-    GET    /api/teachers/
-    POST   /api/teachers/
-    PUT    /api/teachers/<id>/
-    DELETE /api/teachers/<id>/
-
-This file deliberately does NOT depend on:
-    getData()
-    postData()
-    putData()
-    deleteData()
-
-Everything uses the standard browser fetch() API.
-=========================================================
 */
 
-
-/* =====================================================
-   API CONFIGURATION
-===================================================== */
-
-const TEACHERS_API_URL = "/api/teachers/";
-
-
-/* =====================================================
-   APPLICATION STATE
-===================================================== */
+const TEACHERS_API_URL =
+    "https://school-management-backend-igpt.onrender.com/api/teachers/";
 
 let teachers = [];
 
 
-/* =====================================================
-   DOM ELEMENTS
-===================================================== */
+/*
+=========================================================
+DOM ELEMENT REFERENCES
+=========================================================
+*/
 
-const teacherForm =
-    document.getElementById("teacherForm");
-
-const teacherIdInput =
-    document.getElementById("teacherId");
-
-const teacherNameInput =
-    document.getElementById("teacherName");
-
-const teacherEmailInput =
-    document.getElementById("teacherEmail");
-
-const teacherTableBody =
-    document.getElementById("teachersTableBody");
-
-const teacherTable =
-    document.getElementById("teachersTable");
-
-const teacherLoading =
-    document.getElementById("teacherLoading");
-
-const noTeachersMessage =
-    document.getElementById("noTeachersMessage");
-
-const teacherMessage =
-    document.getElementById("teacherMessage");
-
-const teacherFormTitle =
-    document.getElementById("teacherFormTitle");
-
-const teacherSubmitButton =
-    document.getElementById("teacherSubmitButton");
-
-const cancelTeacherEditButton =
-    document.getElementById("cancelTeacherEdit");
+let teacherForm = null;
+let teacherIdInput = null;
+let teacherNameInput = null;
+let teacherEmailInput = null;
+let teacherTableBody = null;
+let teacherTable = null;
+let teacherLoading = null;
+let noTeachersMessage = null;
+let teacherMessage = null;
+let teacherFormTitle = null;
+let teacherSubmitButton = null;
+let cancelTeacherEditButton = null;
 
 
-/* =====================================================
-   DISPLAY MESSAGE
-===================================================== */
+/*
+=========================================================
+INITIALIZATION
+=========================================================
+*/
 
-function showMessage(message, success = true) {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        console.log(
+            "TEACHERS.JS LOADED"
+        );
+
+
+        /*
+        Get DOM elements only after
+        the HTML has loaded.
+        */
+
+        teacherForm =
+            document.getElementById(
+                "teacherForm"
+            );
+
+        teacherIdInput =
+            document.getElementById(
+                "teacherId"
+            );
+
+        teacherNameInput =
+            document.getElementById(
+                "teacherName"
+            );
+
+        teacherEmailInput =
+            document.getElementById(
+                "teacherEmail"
+            );
+
+        teacherTableBody =
+            document.getElementById(
+                "teachersTableBody"
+            );
+
+        teacherTable =
+            document.getElementById(
+                "teachersTable"
+            );
+
+        teacherLoading =
+            document.getElementById(
+                "teacherLoading"
+            );
+
+        noTeachersMessage =
+            document.getElementById(
+                "noTeachersMessage"
+            );
+
+        teacherMessage =
+            document.getElementById(
+                "teacherMessage"
+            );
+
+        teacherFormTitle =
+            document.getElementById(
+                "teacherFormTitle"
+            );
+
+        teacherSubmitButton =
+            document.getElementById(
+                "teacherSubmitButton"
+            );
+
+        cancelTeacherEditButton =
+            document.getElementById(
+                "cancelTeacherEdit"
+            );
+
+
+        /*
+        Attach form event.
+        */
+
+        if (teacherForm) {
+
+            teacherForm.addEventListener(
+                "submit",
+                saveTeacher
+            );
+
+        }
+
+
+        /*
+        Cancel edit button.
+        */
+
+        if (cancelTeacherEditButton) {
+
+            cancelTeacherEditButton.addEventListener(
+                "click",
+                function () {
+
+                    resetTeacherForm();
+
+                    clearMessage();
+
+                }
+            );
+
+        }
+
+
+        /*
+        Table button events.
+        */
+
+        if (teacherTableBody) {
+
+            teacherTableBody.addEventListener(
+                "click",
+                handleTeacherTableClick
+            );
+
+        }
+
+
+        /*
+        Load teachers.
+        */
+
+        loadTeachers();
+
+    }
+);
+
+
+/*
+=========================================================
+DISPLAY MESSAGE
+=========================================================
+*/
+
+function showMessage(
+    message,
+    success = true
+) {
 
     if (!teacherMessage) {
+
         return;
-    }
-
-    teacherMessage.textContent = message;
-
-    teacherMessage.style.display = "block";
-
-    if (success) {
-
-        teacherMessage.style.color = "green";
-
-    } else {
-
-        teacherMessage.style.color = "red";
 
     }
+
+    teacherMessage.textContent =
+        message;
+
+    teacherMessage.style.display =
+        "block";
+
+    teacherMessage.style.color =
+        success
+            ? "green"
+            : "red";
 
 }
 
 
-/* =====================================================
-   CLEAR MESSAGE
-===================================================== */
+/*
+=========================================================
+CLEAR MESSAGE
+=========================================================
+*/
 
 function clearMessage() {
 
     if (!teacherMessage) {
+
         return;
+
     }
 
-    teacherMessage.textContent = "";
+    teacherMessage.textContent =
+        "";
 
-    teacherMessage.style.display = "none";
+    teacherMessage.style.display =
+        "none";
 
 }
 
 
-/* =====================================================
-   LOAD TEACHERS
-===================================================== */
+/*
+=========================================================
+LOAD TEACHERS
+=========================================================
+*/
 
 async function loadTeachers() {
 
@@ -134,9 +238,11 @@ async function loadTeachers() {
         TEACHERS_API_URL
     );
 
+
     if (teacherLoading) {
 
-        teacherLoading.style.display = "block";
+        teacherLoading.style.display =
+            "block";
 
         teacherLoading.textContent =
             "Loading teachers...";
@@ -163,7 +269,7 @@ async function loadTeachers() {
 
 
         console.log(
-            "GET /api/teachers/ status:",
+            "Teachers response status:",
             response.status
         );
 
@@ -187,25 +293,18 @@ async function loadTeachers() {
         );
 
 
-        /*
-        Django REST Framework normally returns
-        an array because pagination has not been
-        configured for this endpoint.
-
-        This extra check also makes the code robust
-        if pagination is enabled later.
-        */
-
         if (Array.isArray(data)) {
 
-            teachers = data;
+            teachers =
+                data;
 
         } else if (
             data &&
             Array.isArray(data.results)
         ) {
 
-            teachers = data.results;
+            teachers =
+                data.results;
 
         } else {
 
@@ -217,7 +316,6 @@ async function loadTeachers() {
 
 
         renderTeachers();
-
 
     } catch (error) {
 
@@ -261,16 +359,18 @@ async function loadTeachers() {
 }
 
 
-/* =====================================================
-   DISPLAY TEACHERS
-===================================================== */
+/*
+=========================================================
+DISPLAY TEACHERS
+=========================================================
+*/
 
 function renderTeachers() {
 
     if (!teacherTableBody) {
 
         console.error(
-            "ERROR: teachersTableBody was not found in teachers.html."
+            "teachersTableBody was not found."
         );
 
         return;
@@ -278,7 +378,8 @@ function renderTeachers() {
     }
 
 
-    teacherTableBody.innerHTML = "";
+    teacherTableBody.innerHTML =
+        "";
 
 
     if (teacherLoading) {
@@ -288,10 +389,6 @@ function renderTeachers() {
 
     }
 
-
-    /*
-    No records
-    */
 
     if (teachers.length === 0) {
 
@@ -316,10 +413,6 @@ function renderTeachers() {
     }
 
 
-    /*
-    Records exist
-    */
-
     if (teacherTable) {
 
         teacherTable.style.display =
@@ -337,7 +430,7 @@ function renderTeachers() {
 
 
     teachers.forEach(
-        function(teacher) {
+        function (teacher) {
 
             const row =
                 document.createElement("tr");
@@ -380,7 +473,9 @@ function renderTeachers() {
             `;
 
 
-            teacherTableBody.appendChild(row);
+            teacherTableBody.appendChild(
+                row
+            );
 
         }
     );
@@ -388,279 +483,272 @@ function renderTeachers() {
 }
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+/*
+=========================================================
+TABLE BUTTON EVENTS
+=========================================================
+*/
 
-function escapeHTML(value) {
+function handleTeacherTableClick(
+    event
+) {
 
-    if (value === null || value === undefined) {
+    const target =
+        event.target;
 
-        return "";
+
+    if (
+        target.classList.contains(
+            "edit-teacher-button"
+        )
+    ) {
+
+        editTeacher(
+            target.dataset.id
+        );
+
+        return;
 
     }
 
 
-    const div =
-        document.createElement("div");
+    if (
+        target.classList.contains(
+            "delete-teacher-button"
+        )
+    ) {
 
-    div.textContent =
-        String(value);
+        deleteTeacher(
+            target.dataset.id
+        );
 
-    return div.innerHTML;
+    }
 
 }
 
 
-/* =====================================================
-   ADD / UPDATE TEACHER
-===================================================== */
+/*
+=========================================================
+SAVE / UPDATE TEACHER
+=========================================================
+*/
 
-if (teacherForm) {
+async function saveTeacher(event) {
 
-    teacherForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
+    event.preventDefault();
 
 
-            clearMessage();
+    clearMessage();
 
 
-            const id =
-                teacherIdInput.value.trim();
-
-            const name =
-                teacherNameInput.value.trim();
-
-            const email =
-                teacherEmailInput.value.trim();
+    const id =
+        teacherIdInput
+            ? teacherIdInput.value.trim()
+            : "";
 
 
-            /*
-            Client-side validation
-            */
-
-            if (!name) {
-
-                showMessage(
-                    "Please enter the teacher's name.",
-                    false
-                );
-
-                teacherNameInput.focus();
-
-                return;
-
-            }
+    const name =
+        teacherNameInput
+            ? teacherNameInput.value.trim()
+            : "";
 
 
-            if (!email) {
-
-                showMessage(
-                    "Please enter the teacher's email.",
-                    false
-                );
-
-                teacherEmailInput.focus();
-
-                return;
-
-            }
+    const email =
+        teacherEmailInput
+            ? teacherEmailInput.value.trim()
+            : "";
 
 
-            const teacherData = {
+    if (!name) {
 
-                name: name,
+        showMessage(
+            "Please enter the teacher's name.",
+            false
+        );
 
-                email: email
+        if (teacherNameInput) {
 
-            };
+            teacherNameInput.focus();
 
+        }
 
-            let url =
-                TEACHERS_API_URL;
+        return;
 
-            let method =
-                "POST";
-
-
-            /*
-            If an ID exists, we are editing.
-            */
-
-            if (id) {
-
-                url =
-                    `${TEACHERS_API_URL}${id}/`;
-
-                method =
-                    "PUT";
-
-            }
+    }
 
 
-            console.log(
-                `${method} request:`,
+    if (!email) {
+
+        showMessage(
+            "Please enter the teacher's email.",
+            false
+        );
+
+        if (teacherEmailInput) {
+
+            teacherEmailInput.focus();
+
+        }
+
+        return;
+
+    }
+
+
+    const teacherData = {
+
+        name: name,
+
+        email: email
+
+    };
+
+
+    const url =
+        id
+            ? `${TEACHERS_API_URL}${id}/`
+            : TEACHERS_API_URL;
+
+
+    const method =
+        id
+            ? "PUT"
+            : "POST";
+
+
+    try {
+
+        if (teacherSubmitButton) {
+
+            teacherSubmitButton.disabled =
+                true;
+
+            teacherSubmitButton.textContent =
+                id
+                    ? "Updating..."
+                    : "Saving...";
+
+        }
+
+
+        const response =
+            await fetch(
                 url,
-                teacherData
+                {
+                    method: method,
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json",
+
+                        "Accept":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            teacherData
+                        )
+
+                }
             );
+
+
+        const responseText =
+            await response.text();
+
+
+        if (!response.ok) {
+
+            let errorMessage =
+                responseText ||
+                `HTTP ${response.status}`;
 
 
             try {
 
-                teacherSubmitButton.disabled =
-                    true;
-
-
-                teacherSubmitButton.textContent =
-                    id
-                        ? "Updating..."
-                        : "Saving...";
-
-
-                const response =
-                    await fetch(
-                        url,
-                        {
-                            method: method,
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json",
-
-                                "Accept":
-                                    "application/json"
-
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    teacherData
-                                )
-
-                        }
+                const errorData =
+                    JSON.parse(
+                        responseText
                     );
 
-
-                console.log(
-                    "Save response status:",
-                    response.status
-                );
-
-
-                /*
-                Read response safely.
-                */
-
-                const responseText =
-                    await response.text();
-
-
-                console.log(
-                    "Save response:",
-                    responseText
-                );
-
-
-                if (!response.ok) {
-
-                    let errorMessage =
-                        "The server rejected the request.";
-
-                    try {
-
-                        const errorData =
-                            JSON.parse(
-                                responseText
-                            );
-
-                        errorMessage =
-                            JSON.stringify(
-                                errorData
-                            );
-
-                    } catch (parseError) {
-
-                        if (responseText) {
-
-                            errorMessage =
-                                responseText;
-
-                        }
-
-                    }
-
-
-                    throw new Error(
-                        errorMessage
+                errorMessage =
+                    JSON.stringify(
+                        errorData
                     );
-
-                }
-
-
-                /*
-                Successful POST/PUT
-                */
-
-                showMessage(
-                    id
-                        ? "Teacher updated successfully."
-                        : "Teacher saved successfully.",
-                    true
-                );
-
-
-                resetTeacherForm();
-
-
-                /*
-                Reload directly from the database
-                through the API.
-                */
-
-                await loadTeachers();
 
             } catch (error) {
 
-                console.error(
-                    "Teacher save error:",
-                    error
-                );
-
-
-                showMessage(
-                    `Could not save teacher: ${error.message}`,
-                    false
-                );
-
-            } finally {
-
-                teacherSubmitButton.disabled =
-                    false;
-
-                teacherSubmitButton.textContent =
-                    "Save Teacher";
+                /*
+                Keep original response text.
+                */
 
             }
 
+
+            throw new Error(
+                errorMessage
+            );
+
         }
-    );
+
+
+        showMessage(
+            id
+                ? "Teacher updated successfully."
+                : "Teacher saved successfully.",
+            true
+        );
+
+
+        resetTeacherForm();
+
+
+        await loadTeachers();
+
+    } catch (error) {
+
+        console.error(
+            "Teacher save error:",
+            error
+        );
+
+
+        showMessage(
+            `Could not save teacher: ${error.message}`,
+            false
+        );
+
+    } finally {
+
+        if (teacherSubmitButton) {
+
+            teacherSubmitButton.disabled =
+                false;
+
+            teacherSubmitButton.textContent =
+                "Save Teacher";
+
+        }
+
+    }
 
 }
 
 
-/* =====================================================
-   EDIT TEACHER
-===================================================== */
+/*
+=========================================================
+EDIT TEACHER
+=========================================================
+*/
 
 function editTeacher(id) {
 
     const teacher =
         teachers.find(
-            function(item) {
+            function (item) {
 
                 return String(item.id) ===
                     String(id);
@@ -681,14 +769,28 @@ function editTeacher(id) {
     }
 
 
-    teacherIdInput.value =
-        teacher.id;
+    if (teacherIdInput) {
 
-    teacherNameInput.value =
-        teacher.name;
+        teacherIdInput.value =
+            teacher.id;
 
-    teacherEmailInput.value =
-        teacher.email;
+    }
+
+
+    if (teacherNameInput) {
+
+        teacherNameInput.value =
+            teacher.name;
+
+    }
+
+
+    if (teacherEmailInput) {
+
+        teacherEmailInput.value =
+            teacher.email;
+
+    }
 
 
     if (teacherFormTitle) {
@@ -715,15 +817,17 @@ function editTeacher(id) {
 }
 
 
-/* =====================================================
-   DELETE TEACHER
-===================================================== */
+/*
+=========================================================
+DELETE TEACHER
+=========================================================
+*/
 
 async function deleteTeacher(id) {
 
     const teacher =
         teachers.find(
-            function(item) {
+            function (item) {
 
                 return String(item.id) ===
                     String(id);
@@ -753,12 +857,6 @@ async function deleteTeacher(id) {
 
     try {
 
-        console.log(
-            "Deleting teacher:",
-            id
-        );
-
-
         const response =
             await fetch(
                 `${TEACHERS_API_URL}${id}/`,
@@ -773,16 +871,11 @@ async function deleteTeacher(id) {
             );
 
 
-        console.log(
-            "Delete response:",
-            response.status
-        );
-
-
         if (!response.ok) {
 
             const errorText =
                 await response.text();
+
 
             throw new Error(
                 errorText ||
@@ -799,7 +892,6 @@ async function deleteTeacher(id) {
 
 
         await loadTeachers();
-
 
     } catch (error) {
 
@@ -819,9 +911,11 @@ async function deleteTeacher(id) {
 }
 
 
-/* =====================================================
-   RESET FORM
-===================================================== */
+/*
+=========================================================
+RESET FORM
+=========================================================
+*/
 
 function resetTeacherForm() {
 
@@ -834,7 +928,8 @@ function resetTeacherForm() {
 
     if (teacherIdInput) {
 
-        teacherIdInput.value = "";
+        teacherIdInput.value =
+            "";
 
     }
 
@@ -857,96 +952,30 @@ function resetTeacherForm() {
 }
 
 
-/* =====================================================
-   CANCEL EDIT
-===================================================== */
+/*
+=========================================================
+ESCAPE HTML
+=========================================================
+*/
 
-if (cancelTeacherEditButton) {
+function escapeHTML(value) {
 
-    cancelTeacherEditButton.addEventListener(
-        "click",
-        function() {
+    if (
+        value === null ||
+        value === undefined
+    ) {
 
-            resetTeacherForm();
-
-            clearMessage();
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   TABLE BUTTON EVENTS
-===================================================== */
-
-if (teacherTableBody) {
-
-    teacherTableBody.addEventListener(
-        "click",
-        function(event) {
-
-            const target =
-                event.target;
-
-
-            /*
-            EDIT BUTTON
-            */
-
-            if (
-                target.classList.contains(
-                    "edit-teacher-button"
-                )
-            ) {
-
-                const id =
-                    target.dataset.id;
-
-                editTeacher(id);
-
-                return;
-
-            }
-
-
-            /*
-            DELETE BUTTON
-            */
-
-            if (
-                target.classList.contains(
-                    "delete-teacher-button"
-                )
-            ) {
-
-                const id =
-                    target.dataset.id;
-
-                deleteTeacher(id);
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   START APPLICATION
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        console.log(
-            "Teacher Management initialized."
-        );
-
-        loadTeachers();
+        return "";
 
     }
-);
+
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(value);
+
+    return div.innerHTML;
+
+}

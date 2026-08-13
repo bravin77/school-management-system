@@ -6,9 +6,14 @@ MARKS MANAGEMENT
 =========================================================
 */
 
-const MARKS_API = "/api/marks/";
-const STUDENTS_API = "/api/students/";
-const SUBJECTS_API = "/api/subjects/";
+const MARKS_API =
+    "https://school-management-backend-igpt.onrender.com/api/marks/";
+
+const STUDENTS_API =
+    "https://school-management-backend-igpt.onrender.com/api/students/";
+
+const SUBJECTS_API =
+    "https://school-management-backend-igpt.onrender.com/api/subjects/";
 
 let marks = [];
 let students = [];
@@ -21,21 +26,37 @@ PAGE INITIALIZATION
 =========================================================
 */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    console.log("MARKS.JS LOADED");
+        console.log(
+            "MARKS.JS LOADED"
+        );
 
-    loadStudents();
-    loadSubjects();
-    loadMarks();
 
-    const form = document.getElementById("marksForm");
+        loadStudents();
+        loadSubjects();
+        loadMarks();
 
-    if (form) {
-        form.addEventListener("submit", saveMark);
+
+        const form =
+            document.getElementById(
+                "marksForm"
+            );
+
+
+        if (form) {
+
+            form.addEventListener(
+                "submit",
+                saveMark
+            );
+
+        }
+
     }
-
-});
+);
 
 
 /*
@@ -46,61 +67,116 @@ LOAD STUDENTS
 
 async function loadStudents() {
 
-    const select = document.getElementById("markStudent");
+    const select =
+        document.getElementById(
+            "markStudent"
+        );
+
 
     if (!select) {
+
+        console.error(
+            "markStudent element not found."
+        );
+
         return;
+
     }
+
 
     try {
 
         select.innerHTML =
             '<option value="">Loading students...</option>';
 
-        const response = await fetch(
-            STUDENTS_API,
-            {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json"
-                },
-                cache: "no-store"
-            }
+
+        const response =
+            await fetch(
+                STUDENTS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+
+        console.log(
+            "Students API status:",
+            response.status
         );
 
+
         if (!response.ok) {
+
             throw new Error(
                 `Failed to load students: HTTP ${response.status}`
             );
+
         }
 
-        const data = await response.json();
 
-        students = Array.isArray(data)
-            ? data
-            : (data.results || []);
+        const data =
+            await response.json();
+
+
+        students =
+            Array.isArray(data)
+                ? data
+                : (
+                    data &&
+                    Array.isArray(data.results)
+                        ? data.results
+                        : []
+                );
+
+
+        console.log(
+            "Students loaded:",
+            students
+        );
+
 
         select.innerHTML =
             '<option value="">Select student</option>';
 
-        students.forEach(student => {
 
-            const option =
-                document.createElement("option");
+        students.forEach(
+            function (student) {
 
-            option.value = student.id;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            option.textContent =
-                student.name;
 
-            select.appendChild(option);
+                option.value =
+                    student.id;
 
-        });
 
-        console.log(
-            "Students loaded:",
-            students.length
+                option.textContent =
+                    student.name;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
         );
+
+
+        if (students.length === 0) {
+
+            select.innerHTML =
+                '<option value="">No students available</option>';
+
+        }
 
     } catch (error) {
 
@@ -109,9 +185,12 @@ async function loadStudents() {
             error
         );
 
+
         select.innerHTML =
             '<option value="">Failed to load students</option>';
+
     }
+
 }
 
 
@@ -124,62 +203,115 @@ LOAD SUBJECTS
 async function loadSubjects() {
 
     const select =
-        document.getElementById("markSubject");
+        document.getElementById(
+            "markSubject"
+        );
+
 
     if (!select) {
+
+        console.error(
+            "markSubject element not found."
+        );
+
         return;
+
     }
+
 
     try {
 
         select.innerHTML =
             '<option value="">Loading subjects...</option>';
 
-        const response = await fetch(
-            SUBJECTS_API,
-            {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json"
-                },
-                cache: "no-store"
-            }
+
+        const response =
+            await fetch(
+                SUBJECTS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+
+        console.log(
+            "Subjects API status:",
+            response.status
         );
 
+
         if (!response.ok) {
+
             throw new Error(
                 `Failed to load subjects: HTTP ${response.status}`
             );
+
         }
 
-        const data = await response.json();
 
-        subjects = Array.isArray(data)
-            ? data
-            : (data.results || []);
+        const data =
+            await response.json();
+
+
+        subjects =
+            Array.isArray(data)
+                ? data
+                : (
+                    data &&
+                    Array.isArray(data.results)
+                        ? data.results
+                        : []
+                );
+
+
+        console.log(
+            "Subjects loaded:",
+            subjects
+        );
+
 
         select.innerHTML =
             '<option value="">Select subject</option>';
 
-        subjects.forEach(subject => {
 
-            const option =
-                document.createElement("option");
+        subjects.forEach(
+            function (subject) {
 
-            option.value =
-                subject.id;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            option.textContent =
-                subject.name;
 
-            select.appendChild(option);
+                option.value =
+                    subject.id;
 
-        });
 
-        console.log(
-            "Subjects loaded:",
-            subjects.length
+                option.textContent =
+                    subject.name;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
         );
+
+
+        if (subjects.length === 0) {
+
+            select.innerHTML =
+                '<option value="">No subjects available</option>';
+
+        }
 
     } catch (error) {
 
@@ -188,9 +320,12 @@ async function loadSubjects() {
             error
         );
 
+
         select.innerHTML =
             '<option value="">Failed to load subjects</option>';
+
     }
+
 }
 
 
@@ -203,11 +338,21 @@ LOAD MARKS
 async function loadMarks() {
 
     const tbody =
-        document.getElementById("marksTableBody");
+        document.getElementById(
+            "marksTableBody"
+        );
+
 
     if (!tbody) {
+
+        console.error(
+            "marksTableBody not found."
+        );
+
         return;
+
     }
+
 
     try {
 
@@ -219,33 +364,58 @@ async function loadMarks() {
             </tr>
         `;
 
-        const response = await fetch(
-            MARKS_API,
-            {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json"
-                },
-                cache: "no-store"
-            }
+
+        const response =
+            await fetch(
+                MARKS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
+
+        console.log(
+            "Marks API status:",
+            response.status
         );
 
+
         if (!response.ok) {
+
             throw new Error(
                 `Failed to load marks: HTTP ${response.status}`
             );
+
         }
 
-        const data = await response.json();
 
-        marks = Array.isArray(data)
-            ? data
-            : (data.results || []);
+        const data =
+            await response.json();
+
+
+        marks =
+            Array.isArray(data)
+                ? data
+                : (
+                    data &&
+                    Array.isArray(data.results)
+                        ? data.results
+                        : []
+                );
+
 
         console.log(
             "Marks loaded:",
-            marks.length
+            marks
         );
+
 
         displayMarks();
 
@@ -256,6 +426,7 @@ async function loadMarks() {
             error
         );
 
+
         tbody.innerHTML = `
             <tr>
                 <td colspan="5">
@@ -263,7 +434,9 @@ async function loadMarks() {
                 </td>
             </tr>
         `;
+
     }
+
 }
 
 
@@ -276,13 +449,21 @@ DISPLAY MARKS
 function displayMarks() {
 
     const tbody =
-        document.getElementById("marksTableBody");
+        document.getElementById(
+            "marksTableBody"
+        );
+
 
     if (!tbody) {
+
         return;
+
     }
 
-    tbody.innerHTML = "";
+
+    tbody.innerHTML =
+        "";
+
 
     if (marks.length === 0) {
 
@@ -295,105 +476,131 @@ function displayMarks() {
         `;
 
         return;
+
     }
 
 
-    marks.forEach(mark => {
+    marks.forEach(
+        function (mark) {
 
-        const row =
-            document.createElement("tr");
-
-
-        /*
-        IMPORTANT:
-        Always create FIVE cells:
-        ID
-        Student
-        Subject
-        Score
-        Actions
-        */
-
-        row.innerHTML = `
-
-            <td>
-                ${escapeHTML(mark.id)}
-            </td>
-
-            <td>
-                ${escapeHTML(
-                    mark.student_name ||
-                    getStudentName(mark.student)
-                )}
-            </td>
-
-            <td>
-                ${escapeHTML(
-                    mark.subject_name ||
-                    getSubjectName(mark.subject)
-                )}
-            </td>
-
-            <td>
-                ${escapeHTML(mark.score)}
-            </td>
-
-            <td class="actions">
-
-                <button
-                    type="button"
-                    class="btn-edit"
-                    data-id="${mark.id}"
-                >
-                    Edit
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-delete"
-                    data-id="${mark.id}"
-                >
-                    Delete
-                </button>
-
-            </td>
-
-        `;
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
 
-        /*
-        Attach event listeners directly.
-        This is more reliable than inline onclick.
-        */
-
-        const editButton =
-            row.querySelector(".btn-edit");
-
-        const deleteButton =
-            row.querySelector(".btn-delete");
+            const studentName =
+                mark.student_name ||
+                getStudentName(
+                    mark.student
+                );
 
 
-        editButton.addEventListener(
-            "click",
-            () => editMark(mark.id)
-        );
+            const subjectName =
+                mark.subject_name ||
+                getSubjectName(
+                    mark.subject
+                );
 
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteMark(mark.id)
-        );
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(mark.id)}
+                </td>
+
+                <td>
+                    ${escapeHTML(studentName)}
+                </td>
+
+                <td>
+                    ${escapeHTML(subjectName)}
+                </td>
+
+                <td>
+                    ${escapeHTML(mark.score)}
+                </td>
+
+                <td class="actions">
+
+                    <button
+                        type="button"
+                        class="btn-edit"
+                        data-id="${mark.id}"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-delete"
+                        data-id="${mark.id}"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            `;
 
 
-        tbody.appendChild(row);
+            const editButton =
+                row.querySelector(
+                    ".btn-edit"
+                );
 
-    });
+
+            const deleteButton =
+                row.querySelector(
+                    ".btn-delete"
+                );
+
+
+            if (editButton) {
+
+                editButton.addEventListener(
+                    "click",
+                    function () {
+
+                        editMark(
+                            mark.id
+                        );
+
+                    }
+                );
+
+            }
+
+
+            if (deleteButton) {
+
+                deleteButton.addEventListener(
+                    "click",
+                    function () {
+
+                        deleteMark(
+                            mark.id
+                        );
+
+                    }
+                );
+
+            }
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
 }
 
 
 /*
 =========================================================
-GET STUDENT NAME FALLBACK
+GET STUDENT NAME
 =========================================================
 */
 
@@ -401,19 +608,25 @@ function getStudentName(id) {
 
     const student =
         students.find(
-            item =>
-                Number(item.id) === Number(id)
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(id);
+
+            }
         );
+
 
     return student
         ? student.name
         : `Student #${id}`;
+
 }
 
 
 /*
 =========================================================
-GET SUBJECT NAME FALLBACK
+GET SUBJECT NAME
 =========================================================
 */
 
@@ -421,13 +634,19 @@ function getSubjectName(id) {
 
     const subject =
         subjects.find(
-            item =>
-                Number(item.id) === Number(id)
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(id);
+
+            }
         );
+
 
     return subject
         ? subject.name
         : `Subject #${id}`;
+
 }
 
 
@@ -441,32 +660,50 @@ async function saveMark(event) {
 
     event.preventDefault();
 
+
     const id =
-        document.getElementById("markId").value;
+        document.getElementById(
+            "markId"
+        ).value;
+
 
     const student =
-        document.getElementById("markStudent").value;
+        document.getElementById(
+            "markStudent"
+        ).value;
+
 
     const subject =
-        document.getElementById("markSubject").value;
+        document.getElementById(
+            "markSubject"
+        ).value;
+
 
     const score =
-        document.getElementById("markScore").value;
+        document.getElementById(
+            "markScore"
+        ).value;
 
 
     if (!student) {
 
-        alert("Please select a student.");
+        alert(
+            "Please select a student."
+        );
 
         return;
+
     }
 
 
     if (!subject) {
 
-        alert("Please select a subject.");
+        alert(
+            "Please select a subject."
+        );
 
         return;
+
     }
 
 
@@ -481,28 +718,34 @@ async function saveMark(event) {
         );
 
         return;
+
     }
 
 
     const payload = {
 
-        student: Number(student),
+        student:
+            Number(student),
 
-        subject: Number(subject),
+        subject:
+            Number(subject),
 
-        score: Number(score)
+        score:
+            Number(score)
 
     };
 
 
-    const url = id
-        ? `${MARKS_API}${id}/`
-        : MARKS_API;
+    const url =
+        id
+            ? `${MARKS_API}${id}/`
+            : MARKS_API;
 
 
-    const method = id
-        ? "PUT"
-        : "POST";
+    const method =
+        id
+            ? "PUT"
+            : "POST";
 
 
     try {
@@ -511,18 +754,24 @@ async function saveMark(event) {
             await fetch(
                 url,
                 {
-                    method: method,
+                    method:
+                        method,
 
                     headers: {
+
                         "Content-Type":
                             "application/json",
 
                         "Accept":
                             "application/json"
+
                     },
 
                     body:
-                        JSON.stringify(payload)
+                        JSON.stringify(
+                            payload
+                        )
+
                 }
             );
 
@@ -537,6 +786,7 @@ async function saveMark(event) {
                 text ||
                 `HTTP ${response.status}`
             );
+
         }
 
 
@@ -552,7 +802,6 @@ async function saveMark(event) {
 
         await loadMarks();
 
-
     } catch (error) {
 
         console.error(
@@ -560,11 +809,14 @@ async function saveMark(event) {
             error
         );
 
+
         alert(
             "Failed to save mark.\n\n" +
             error.message
         );
+
     }
+
 }
 
 
@@ -578,32 +830,47 @@ function editMark(id) {
 
     const mark =
         marks.find(
-            item =>
-                Number(item.id) === Number(id)
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(id);
+
+            }
         );
 
 
     if (!mark) {
 
-        alert("Mark record not found.");
+        alert(
+            "Mark record not found."
+        );
 
         return;
+
     }
 
 
-    document.getElementById("markId").value =
+    document.getElementById(
+        "markId"
+    ).value =
         mark.id;
 
 
-    document.getElementById("markStudent").value =
+    document.getElementById(
+        "markStudent"
+    ).value =
         mark.student;
 
 
-    document.getElementById("markSubject").value =
+    document.getElementById(
+        "markSubject"
+    ).value =
         mark.subject;
 
 
-    document.getElementById("markScore").value =
+    document.getElementById(
+        "markScore"
+    ).value =
         mark.score;
 
 
@@ -611,6 +878,7 @@ function editMark(id) {
         top: 0,
         behavior: "smooth"
     });
+
 }
 
 
@@ -629,7 +897,9 @@ async function deleteMark(id) {
 
 
     if (!confirmed) {
+
         return;
+
     }
 
 
@@ -639,7 +909,8 @@ async function deleteMark(id) {
             await fetch(
                 `${MARKS_API}${id}/`,
                 {
-                    method: "DELETE",
+                    method:
+                        "DELETE",
 
                     headers: {
                         "Accept":
@@ -654,10 +925,12 @@ async function deleteMark(id) {
             const text =
                 await response.text();
 
+
             throw new Error(
                 text ||
                 `HTTP ${response.status}`
             );
+
         }
 
 
@@ -671,7 +944,6 @@ async function deleteMark(id) {
 
         await loadMarks();
 
-
     } catch (error) {
 
         console.error(
@@ -684,7 +956,9 @@ async function deleteMark(id) {
             "Failed to delete mark.\n\n" +
             error.message
         );
+
     }
+
 }
 
 
@@ -697,15 +971,31 @@ RESET FORM
 function resetMarkForm() {
 
     const form =
-        document.getElementById("marksForm");
+        document.getElementById(
+            "marksForm"
+        );
+
 
     if (form) {
+
         form.reset();
+
     }
 
 
-    document.getElementById("markId").value =
-        "";
+    const idInput =
+        document.getElementById(
+            "markId"
+        );
+
+
+    if (idInput) {
+
+        idInput.value =
+            "";
+
+    }
+
 }
 
 
@@ -718,10 +1008,15 @@ ESCAPE HTML
 function escapeHTML(value) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.textContent =
         value ?? "";
 
+
     return div.innerHTML;
+
 }

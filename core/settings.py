@@ -142,13 +142,32 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
+# Render provides the RENDER environment variable.
+#
+# LOCAL:
+#     RENDER is normally absent/None.
+#     Therefore SQLite is used.
+#
+# RENDER:
+#     RENDER=true.
+#     Therefore DATABASE_URL is used for PostgreSQL.
 
-if DATABASE_URL:
+IS_RENDER = os.environ.get(
+    "RENDER",
+    ""
+).lower() == "true"
+
+
+if IS_RENDER:
 
     # --------------------------------------------------------
-    # PRODUCTION
-    # Render provides DATABASE_URL
+    # PRODUCTION DATABASE - RENDER POSTGRESQL
     # --------------------------------------------------------
+
+    if not DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL is missing on Render."
+        )
 
     DATABASES = {
 
@@ -164,14 +183,21 @@ if DATABASE_URL:
 
     }
 
-    print("DATABASE: Production DATABASE_URL")
+    print("DATABASE: Production PostgreSQL")
 
 
 else:
 
     # --------------------------------------------------------
-    # LOCAL DEVELOPMENT
-    # Use SQLite when DATABASE_URL is not available
+    # LOCAL DEVELOPMENT DATABASE - SQLITE
+    # --------------------------------------------------------
+    #
+    # IMPORTANT:
+    # Even if DATABASE_URL exists on the local computer,
+    # it is deliberately ignored here.
+    #
+    # This prevents the local machine from attempting to
+    # connect to the Render PostgreSQL database.
     # --------------------------------------------------------
 
     DATABASES = {
@@ -323,6 +349,7 @@ VERCEL_FRONTEND_URL = os.environ.get(
     "VERCEL_FRONTEND_URL"
 )
 
+
 if VERCEL_FRONTEND_URL:
 
     if VERCEL_FRONTEND_URL not in CORS_ALLOWED_ORIGINS:
@@ -347,19 +374,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 
     "http://127.0.0.1:3000",
-
-    "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
-
-    "https://school-management-system-e8uewvses-develop-a148.vercel.app",
-
-]
-
-
-# ------------------------------------------------------------
-# Support Vercel preview deployments
-# ------------------------------------------------------------
-
-CSRF_TRUSTED_ORIGINS += [
 
     "https://school-management-system-cx99s5v8i-develop-a148.vercel.app",
 

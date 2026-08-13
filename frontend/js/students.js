@@ -6,8 +6,11 @@ STUDENT MANAGEMENT MODULE
 =========================================================
 */
 
-const STUDENTS_API = "/api/students/";
-const SUBJECTS_API = "/api/subjects/";
+const STUDENTS_API =
+    "https://school-management-backend-igpt.onrender.com/api/students/";
+
+const SUBJECTS_API =
+    "https://school-management-backend-igpt.onrender.com/api/subjects/";
 
 let students = [];
 let subjects = [];
@@ -127,7 +130,8 @@ async function loadStudents() {
     try {
 
         console.log(
-            "Loading students..."
+            "Loading students from:",
+            STUDENTS_API
         );
 
         students =
@@ -264,15 +268,23 @@ function displayStudents() {
         const deleteButton =
             row.querySelector(".btn-delete");
 
-        editButton.addEventListener(
-            "click",
-            () => editStudent(student.id)
-        );
+        if (editButton) {
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteStudent(student.id)
-        );
+            editButton.addEventListener(
+                "click",
+                () => editStudent(student.id)
+            );
+
+        }
+
+        if (deleteButton) {
+
+            deleteButton.addEventListener(
+                "click",
+                () => deleteStudent(student.id)
+            );
+
+        }
 
         tbody.appendChild(row);
 
@@ -312,10 +324,6 @@ async function saveStudent(event) {
         );
 
 
-    /*
-    Validate
-    */
-
     if (!name) {
 
         alert(
@@ -339,13 +347,14 @@ async function saveStudent(event) {
 
 
     const selectedSubjects =
-        Array.from(
-            subjectSelect.selectedOptions
-        )
-        .map(
-            option =>
-                Number(option.value)
-        );
+        subjectSelect
+            ? Array.from(
+                subjectSelect.selectedOptions
+            ).map(
+                option =>
+                    Number(option.value)
+            )
+            : [];
 
 
     const payload = {
@@ -364,10 +373,6 @@ async function saveStudent(event) {
         let result;
 
 
-        /*
-        UPDATE
-        */
-
         if (id) {
 
             result =
@@ -380,14 +385,7 @@ async function saveStudent(event) {
                 "Student updated successfully."
             );
 
-        }
-
-
-        /*
-        CREATE
-        */
-
-        else {
+        } else {
 
             result =
                 await apiPost(
@@ -409,11 +407,6 @@ async function saveStudent(event) {
 
 
         resetStudentForm();
-
-
-        /*
-        Reload students from API
-        */
 
         await loadStudents();
 
@@ -484,22 +477,26 @@ function editStudent(id) {
         );
 
 
-    const studentSubjects =
-        Array.isArray(student.subjects)
-            ? student.subjects.map(Number)
-            : [];
+    if (select) {
+
+        const studentSubjects =
+            Array.isArray(student.subjects)
+                ? student.subjects.map(Number)
+                : [];
 
 
-    Array.from(
-        select.options
-    ).forEach(option => {
+        Array.from(
+            select.options
+        ).forEach(option => {
 
-        option.selected =
-            studentSubjects.includes(
-                Number(option.value)
-            );
+            option.selected =
+                studentSubjects.includes(
+                    Number(option.value)
+                );
 
-    });
+        });
+
+    }
 
 
     window.scrollTo({

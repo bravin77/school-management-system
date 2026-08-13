@@ -1,63 +1,171 @@
 "use strict";
 
-const SUBJECTS_API = "/api/subjects/";
-const TEACHERS_API = "/api/teachers/";
+/*
+=========================================================
+SUBJECT MANAGEMENT MODULE
+=========================================================
+*/
+
+const SUBJECTS_API =
+    "https://school-management-backend-igpt.onrender.com/api/subjects/";
+
+const TEACHERS_API =
+    "https://school-management-backend-igpt.onrender.com/api/teachers/";
 
 let subjects = [];
 let teachers = [];
 
-document.addEventListener("DOMContentLoaded", function () {
 
-    loadTeachers();
-    loadSubjects();
+/*
+=========================================================
+INITIALIZATION
+=========================================================
+*/
 
-    const form = document.getElementById("subjectForm");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    if (form) {
-        form.addEventListener("submit", saveSubject);
+        console.log(
+            "SUBJECTS.JS LOADED"
+        );
+
+
+        loadTeachers();
+        loadSubjects();
+
+
+        const form =
+            document.getElementById(
+                "subjectForm"
+            );
+
+
+        if (form) {
+
+            form.addEventListener(
+                "submit",
+                saveSubject
+            );
+
+        }
+
     }
+);
 
-});
 
+/*
+=========================================================
+LOAD TEACHERS
+=========================================================
+*/
 
 async function loadTeachers() {
 
+    const select =
+        document.getElementById(
+            "subjectTeacher"
+        );
+
+
+    if (!select) {
+
+        console.error(
+            "subjectTeacher element not found."
+        );
+
+        return;
+
+    }
+
+
     try {
 
-        const response = await fetch(TEACHERS_API);
+        select.innerHTML =
+            '<option value="">Loading teachers...</option>';
+
+
+        const response =
+            await fetch(
+                TEACHERS_API,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
+                    cache: "no-store"
+                }
+            );
+
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
         }
 
-        const data = await response.json();
 
-        teachers = Array.isArray(data)
-            ? data
-            : data.results || [];
+        const data =
+            await response.json();
 
-        const select =
-            document.getElementById("subjectTeacher");
 
-        if (!select) {
-            console.error("subjectTeacher not found");
-            return;
-        }
+        teachers =
+            Array.isArray(data)
+                ? data
+                : (
+                    data &&
+                    Array.isArray(data.results)
+                        ? data.results
+                        : []
+                );
+
+
+        console.log(
+            "Teachers loaded:",
+            teachers
+        );
+
 
         select.innerHTML =
             '<option value="">Select teacher</option>';
 
-        teachers.forEach(function (teacher) {
 
-            const option =
-                document.createElement("option");
+        teachers.forEach(
+            function (teacher) {
 
-            option.value = teacher.id;
-            option.textContent = teacher.name;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            select.appendChild(option);
 
-        });
+                option.value =
+                    teacher.id;
+
+
+                option.textContent =
+                    teacher.name;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        if (teachers.length === 0) {
+
+            select.innerHTML =
+                '<option value="">No teachers available</option>';
+
+        }
 
     } catch (error) {
 
@@ -66,12 +174,28 @@ async function loadTeachers() {
             error
         );
 
+
+        select.innerHTML =
+            '<option value="">Failed to load teachers</option>';
+
     }
 
 }
 
 
+/*
+=========================================================
+LOAD SUBJECTS
+=========================================================
+*/
+
 async function loadSubjects() {
+
+    const tbody =
+        document.getElementById(
+            "subjectsTableBody"
+        );
+
 
     try {
 
@@ -79,19 +203,47 @@ async function loadSubjects() {
             await fetch(
                 SUBJECTS_API,
                 {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    },
+
                     cache: "no-store"
                 }
             );
 
+
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
         }
 
-        const data = await response.json();
 
-        subjects = Array.isArray(data)
-            ? data
-            : data.results || [];
+        const data =
+            await response.json();
+
+
+        subjects =
+            Array.isArray(data)
+                ? data
+                : (
+                    data &&
+                    Array.isArray(data.results)
+                        ? data.results
+                        : []
+                );
+
+
+        console.log(
+            "Subjects loaded:",
+            subjects
+        );
+
 
         displaySubjects();
 
@@ -102,10 +254,29 @@ async function loadSubjects() {
             error
         );
 
+
+        if (tbody) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        Failed to load subjects.
+                    </td>
+                </tr>
+            `;
+
+        }
+
     }
 
 }
 
+
+/*
+=========================================================
+DISPLAY SUBJECTS
+=========================================================
+*/
 
 function displaySubjects() {
 
@@ -114,69 +285,192 @@ function displaySubjects() {
             "subjectsTableBody"
         );
 
+
     if (!tbody) {
+
         console.error(
-            "subjectsTableBody not found"
+            "subjectsTableBody not found."
         );
+
         return;
+
     }
 
-    tbody.innerHTML = "";
 
-    subjects.forEach(function (subject) {
+    tbody.innerHTML =
+        "";
 
-        const row =
-            document.createElement("tr");
 
-        row.innerHTML = `
+    if (subjects.length === 0) {
 
-            <td>${subject.id}</td>
-
-            <td>${escapeHTML(subject.name)}</td>
-
-            <td>
-                ${escapeHTML(
-                    subject.teacher_name || ""
-                )}
-            </td>
-
-            <td>
-
-                <button
-                    type="button"
-                    onclick="editSubject(${subject.id})">
-                    Edit
-                </button>
-
-                <button
-                    type="button"
-                    onclick="deleteSubject(${subject.id})">
-                    Delete
-                </button>
-
-            </td>
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4">
+                    No subjects found.
+                </td>
+            </tr>
         `;
 
-        tbody.appendChild(row);
+        return;
 
-    });
+    }
+
+
+    subjects.forEach(
+        function (subject) {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const teacherName =
+                subject.teacher_name ||
+                getTeacherName(
+                    subject.teacher
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHTML(subject.id)}
+                </td>
+
+                <td>
+                    ${escapeHTML(subject.name)}
+                </td>
+
+                <td>
+                    ${escapeHTML(teacherName)}
+                </td>
+
+                <td>
+
+                    <button
+                        type="button"
+                        class="btn-edit"
+                        data-id="${subject.id}"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-delete"
+                        data-id="${subject.id}"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            `;
+
+
+            const editButton =
+                row.querySelector(
+                    ".btn-edit"
+                );
+
+
+            const deleteButton =
+                row.querySelector(
+                    ".btn-delete"
+                );
+
+
+            if (editButton) {
+
+                editButton.addEventListener(
+                    "click",
+                    function () {
+
+                        editSubject(
+                            subject.id
+                        );
+
+                    }
+                );
+
+            }
+
+
+            if (deleteButton) {
+
+                deleteButton.addEventListener(
+                    "click",
+                    function () {
+
+                        deleteSubject(
+                            subject.id
+                        );
+
+                    }
+                );
+
+            }
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
 
 }
 
 
+/*
+=========================================================
+GET TEACHER NAME
+=========================================================
+*/
+
+function getTeacherName(id) {
+
+    const teacher =
+        teachers.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(id);
+
+            }
+        );
+
+
+    return teacher
+        ? teacher.name
+        : `Teacher #${id}`;
+
+}
+
+
+/*
+=========================================================
+SAVE / UPDATE SUBJECT
+=========================================================
+*/
+
 async function saveSubject(event) {
 
     event.preventDefault();
+
 
     const id =
         document.getElementById(
             "subjectId"
         ).value;
 
+
     const name =
         document.getElementById(
             "subjectName"
         ).value.trim();
+
 
     const teacher =
         document.getElementById(
@@ -186,7 +480,9 @@ async function saveSubject(event) {
 
     if (!name) {
 
-        alert("Enter subject name.");
+        alert(
+            "Enter subject name."
+        );
 
         return;
 
@@ -195,7 +491,9 @@ async function saveSubject(event) {
 
     if (!teacher) {
 
-        alert("Select a teacher.");
+        alert(
+            "Select a teacher."
+        );
 
         return;
 
@@ -204,25 +502,25 @@ async function saveSubject(event) {
 
     const payload = {
 
-        name: name,
+        name:
+            name,
 
-        teacher: Number(teacher)
+        teacher:
+            Number(teacher)
 
     };
 
 
-    let url = SUBJECTS_API;
-    let method = "POST";
+    const url =
+        id
+            ? `${SUBJECTS_API}${id}/`
+            : SUBJECTS_API;
 
 
-    if (id) {
-
-        url =
-            `${SUBJECTS_API}${id}/`;
-
-        method = "PUT";
-
-    }
+    const method =
+        id
+            ? "PUT"
+            : "POST";
 
 
     try {
@@ -231,18 +529,24 @@ async function saveSubject(event) {
             await fetch(
                 url,
                 {
-                    method: method,
+                    method:
+                        method,
 
                     headers: {
+
                         "Content-Type":
                             "application/json",
 
                         "Accept":
                             "application/json"
+
                     },
 
                     body:
-                        JSON.stringify(payload)
+                        JSON.stringify(
+                            payload
+                        )
+
                 }
             );
 
@@ -261,12 +565,6 @@ async function saveSubject(event) {
         }
 
 
-        console.log(
-            "Subject saved:",
-            text
-        );
-
-
         alert(
             id
                 ? "Subject updated successfully."
@@ -278,13 +576,14 @@ async function saveSubject(event) {
             "subjectForm"
         ).reset();
 
+
         document.getElementById(
             "subjectId"
-        ).value = "";
+        ).value =
+            "";
 
 
         await loadSubjects();
-
 
     } catch (error) {
 
@@ -292,6 +591,7 @@ async function saveSubject(event) {
             "Subject save error:",
             error
         );
+
 
         alert(
             "Failed to save subject:\n" +
@@ -303,44 +603,74 @@ async function saveSubject(event) {
 }
 
 
+/*
+=========================================================
+EDIT SUBJECT
+=========================================================
+*/
+
 function editSubject(id) {
 
     const subject =
         subjects.find(
-            item =>
-                Number(item.id) ===
-                Number(id)
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(id);
+
+            }
         );
 
 
     if (!subject) {
+
+        alert(
+            "Subject not found."
+        );
+
         return;
+
     }
 
 
     document.getElementById(
         "subjectId"
-    ).value = subject.id;
+    ).value =
+        subject.id;
+
 
     document.getElementById(
         "subjectName"
-    ).value = subject.name;
+    ).value =
+        subject.name;
+
 
     document.getElementById(
         "subjectTeacher"
-    ).value = subject.teacher;
+    ).value =
+        subject.teacher;
 
 }
 
 
+/*
+=========================================================
+DELETE SUBJECT
+=========================================================
+*/
+
 async function deleteSubject(id) {
 
-    if (
-        !confirm(
+    const confirmed =
+        confirm(
             "Delete this subject?"
-        )
-    ) {
+        );
+
+
+    if (!confirmed) {
+
         return;
+
     }
 
 
@@ -350,7 +680,13 @@ async function deleteSubject(id) {
             await fetch(
                 `${SUBJECTS_API}${id}/`,
                 {
-                    method: "DELETE"
+                    method:
+                        "DELETE",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
                 }
             );
 
@@ -368,15 +704,20 @@ async function deleteSubject(id) {
             "Subject deleted successfully."
         );
 
-        await loadSubjects();
 
+        await loadSubjects();
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Subject delete error:",
+            error
+        );
+
 
         alert(
-            "Failed to delete subject."
+            "Failed to delete subject:\n" +
+            error.message
         );
 
     }
@@ -384,13 +725,23 @@ async function deleteSubject(id) {
 }
 
 
+/*
+=========================================================
+ESCAPE HTML
+=========================================================
+*/
+
 function escapeHTML(value) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
+
 
     div.textContent =
         value ?? "";
+
 
     return div.innerHTML;
 
